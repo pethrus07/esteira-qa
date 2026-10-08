@@ -1,0 +1,41 @@
+{
+  "nome": "tutorial",
+  "_fonte": "qa-empresa/tutoriais/esteira/referencia.json (calibrado 01/10 e 07/10): ancora ACEITAVEL = tour Instituto aprovado pelo Pedro (63,5% parado, maior 5,1s); REPROVADO = Produto Y v5 recusado pela cliente (93-95%, ate 10,2s); entregue pela esteira nova: 33,5% / 2,7s.",
+  "midia": {
+    "pct_parado": {
+      "max": 55,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Entre o entregue (33,5%) e o aprovado (63,5%); o recusado tinha 93-95%."
+    },
+    "maior_trecho_parado_s": {
+      "max": 4,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "O numero que mais acompanha o julgamento humano: 10s sem um pixel mudar foi o 'bugado' da cliente. Aprovado 5,1s; entregue 2,7s."
+    },
+    "altura": {
+      "min": 1080,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Os recusados sairam 720p (recordVideo crava VP8 a 1 Mbit/s)."
+    },
+    "lufs": {
+      "alvo": -16,
+      "tolerancia": 1.5,
+      "severidade": "reprova",
+      "procedencia": "norma"
+    },
+    "voz_coloracao": {
+      "min": 4.1,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "NISQA: entre a voz recusada (Thalita, 4,02) e a PIOR cena da escolhida (Francisca, 4,17). E o 'seca' da cliente."
+    },
+    "fala_fidelidade_pct": {
+      "min": 99,
+      "severidade": "reprova",
+      "procedencia": "ancora"
+    }
+  }
+}

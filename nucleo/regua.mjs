@@ -37,6 +37,23 @@ function limiteEfetivo(base, projeto, destino) {
   return L;
 }
 
+/** PERFIL — limites ancorados num TIPO de peça (tutorial, story, proposta…).
+    Os limites de imagem parada vieram de tutoriais; aplicá-los a qualquer
+    vídeo seria calibrar fora do domínio. O perfil fica entre a marca e o
+    projeto: o projeto ainda pode sobrescrever. */
+export function comPerfil(nome, projeto) {
+  if (!nome) return { regua: projeto };
+  const f = path.join(RAIZ, "regua", "perfis", `${String(nome).toLowerCase()}.json`);
+  if (!fs.existsSync(f)) return { regua: projeto, erro: `perfil "${nome}" sem arquivo em regua/perfis/` };
+  const perfil = JSON.parse(fs.readFileSync(f, "utf8"));
+  const out = { ...(projeto || {}) };
+  for (const [fmt, regras] of Object.entries(perfil)) {
+    if (typeof regras !== "object" || fmt.startsWith("_")) continue;
+    out[fmt] = { ...regras, ...(projeto?.[fmt] || {}) };
+  }
+  return { regua: out, perfil: perfil.nome };
+}
+
 /** Aplica a régua de um formato sobre as medidas de um instrumento. */
 export function julgar(formato, medidas, { destino = "tela", projeto = null, naoAplica = [] } = {}) {
   const regras = PADRAO[formato] || {};
@@ -72,9 +89,18 @@ export function julgar(formato, medidas, { destino = "tela", projeto = null, nao
       // ppi null em documento sem imagem é "não se aplica", não falta de medida
       c.estado = naoAplica.includes(id) ? "passa" : "nao_medido";
       c.valor = naoAplica.includes(id) ? "não se aplica" : v;
+    } else if (L.alvo != null && typeof v === "number") {
+      const tol = L.tolerancia ?? 0;
+      c.limite = `${L.alvo} ±${tol}`;
+      c.estado = Math.abs(v - L.alvo) > tol ? L.severidade : "passa";
     } else if (L.max != null && v > L.max) { c.estado = L.severidade; c.limite = `≤ ${L.max}`; }
     else if (L.min != null && v < L.min) { c.estado = L.severidade; c.limite = `≥ ${L.min}`; }
     else if (L.igual !== undefined && v !== L.igual) { c.estado = L.severidade; c.limite = `= ${L.igual}`; }
+    else if (L.max == null && L.min == null && L.igual === undefined && L.severidade === "informa") {
+      // Regra SEM limite registra o valor. VEREDITO 08/10: caía em "passa" e
+      // sumia do boletim — 6 s de tela morta medidos e escondidos.
+      c.estado = "informa"; c.limite = "—";
+    }
     else {
       c.estado = "passa";
       c.limite = L.max != null ? `≤ ${L.max}` : L.min != null ? `≥ ${L.min}` : L.igual !== undefined ? `= ${L.igual}` : "—";

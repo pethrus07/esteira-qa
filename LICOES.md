@@ -233,3 +233,44 @@ Impact.
   limite de qualidade 80 (mercado) dá aviso em 1 delas (q=70, tabela
   própria, provavelmente a foto de imprensa original). Fica como aviso
   até ter âncora com veredito.
+
+---
+
+## Áudio e vídeo (08/10)
+
+### Generalizar sem mudar a medida
+
+O instrumento de mídia saiu do protótipo dos tutoriais e foi conferido
+por **equivalência**: nos mesmos arquivos (2 vídeos reais e 2 fixtures),
+congelamento, LUFS, pico e faixa saíram **idênticos** ao `medir.mjs`
+original, até a casa decimal. É um teste mais forte que a fixture,
+porque prova que generalizar não alterou o que se mede.
+
+### Limite tem domínio
+
+Os limites de imagem parada (55%, 4s) vieram de **tutoriais**. Aplicá-los a
+qualquer vídeo (fala para câmera, slideshow) seria calibrar fora do domínio,
+o mesmo erro do BRISQUE em arte. Viraram **perfil** (`--perfil tutorial`).
+No padrão, imagem parada só informa.
+
+### Achados de medição
+
+- **O codec com perda sobe o pico.** O WAV nivelado a −1,4 dBTP saiu
+  −0,8 dBTP depois do AAC. Com a mesma entrada a −2,5: **−1,9 a 160 kbps,
+  −1,0 a 128 kbps**. Quanto menor o bitrate, maior o sobressinal. Nivelar a
+  −1,5 antes de comprimir **não garante** −1 depois: mede-se o arquivo
+  final (a "lição mais cara" do protótipo, de novo).
+- **Regra sem limite tem de aparecer.** Ela caía em "passa" e sumia, e
+  6s de tela morta foram medidos e escondidos. Agora registra o valor.
+- **Fixture com nível aproximado testa a fixture.** O `loudnorm` de uma
+  passagem só aproxima; as fixtures usam duas passagens.
+
+### Pergunta deixada para o Pedro (não concluída)
+
+Os vídeos de hoje do Produto Y em `tutoriais/video/` reprovam pela própria
+régua do protótipo: `e03-criar-evento` (09:22) com 64,9% parado, e
+`e02-entrar` (10:08) com **94,5%** e pausa de **46s** em silêncio desde
+os 27,7s. Os dois têm o maior trecho em **5,1s**, e o e02 congela em
+blocos de 5,07 a 5,1s repetidos a cada 5s: o "5,1s teimoso" das lições,
+assinatura de causa estrutural. A memória registra "aprovado 08/10, 5,6%
+parado". **Não sei qual arquivo foi aprovado.** Conferir antes de enviar.

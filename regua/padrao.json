@@ -272,5 +272,56 @@
       "porque": "GPS, camera ou autor no EXIF. Em peca publica ou de portfolio, vaza local e aparelho (regra LGPD do portfolio). Remover antes de publicar."
     },
     "_calibracao": "08/10: 13 imagens publicadas do Instituto Automacao: RGB, sem perfil, sem EXIF sensivel, q 70-82 (12 com tabela IJG q=82 do pipeline do site). O limite 80 (mercado) da aviso em 1 de 13 publicadas — mantido como aviso ate ter ancora com veredito."
+  },
+  "midia": {
+    "_equivalencia": "08/10: mesmos numeros que o prototipo (tutoriais/esteira/medir.mjs) em 2 videos, ate a casa decimal: congelamento, LUFS, pico, faixa.",
+    "_nao_cobre": "timbre, simpatia, ritmo percebido (ouvido humano); imagem parada so tem limite no perfil 'tutorial' — fora dele, cada tipo de video pede sua ancora.",
+    "lufs": {
+      "alvo": -16,
+      "tolerancia": 1.5,
+      "severidade": "aviso",
+      "procedencia": "norma",
+      "porque": "-16 LUFS e o alvo de voz para celular/podcast (AES TD1004; Apple). Broadcast e -23 (EBU R128); streaming de musica ~-14. Ancora: os videos recusados estavam a -22."
+    },
+    "pico_real_dbtp": {
+      "max": -1,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "EBU R128 / AES: pico real <= -1 dBTP; acima disso a conversao para AAC/MP3 clipa."
+    },
+    "amostras_no_pico": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Amostras cravadas na escala cheia = o audio JA clipou (distorcao audivel)."
+    },
+    "silencio_final_s": {
+      "max": 2,
+      "severidade": "aviso",
+      "procedencia": "arbitrado",
+      "porque": "Cauda de silencio sobrando (render que nao cortou). Sem ancora ainda."
+    },
+    "silencio_inicial_s": {
+      "max": 1,
+      "severidade": "aviso",
+      "procedencia": "arbitrado"
+    },
+    "pct_parado": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "ancora",
+      "porque": "Limite so existe no perfil 'tutorial' (ancoras de tutorial). Fora dele, informa."
+    },
+    "maior_trecho_parado_s": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "ancora"
+    },
+    "fala_fidelidade_pct": {
+      "min": 99,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Transcricao reversa contra o texto. ATENCAO a variancia: a mesma cena deu 98,7 / 93,3 / 98,7 — leitura unica baixa pede REGERAR e medir de novo, nao reescrever."
+    }
   }
 }

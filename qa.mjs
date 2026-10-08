@@ -21,7 +21,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { RAIZ, rodarPython } from "./nucleo/ambiente.mjs";
-import { julgar, veredito, reguaDoProjeto } from "./nucleo/regua.mjs";
+import { comPerfil, julgar, veredito, reguaDoProjeto } from "./nucleo/regua.mjs";
 import { carregarMarca, listarMarcas, medirMarca } from "./nucleo/marca.mjs";
 
 function rodarNode(script, args) {
@@ -48,6 +48,11 @@ const FORMATOS = {
       o.midia || (/@page\b/.test(fs.readFileSync(arq, "utf8")) ? "print" : "screen"), ...comTexto(o)]),
     nao_cobre: "se o PDF entregue é DESTE HTML (PDF defasado) → passar o PDF junto; contraste e acessibilidade de tela → `web` (a construir)",
   },
+  midia: {
+    ext: [".mp4", ".webm", ".mov", ".mkv", ".wav", ".mp3", ".m4a", ".aac", ".ogg", ".opus", ".flac"],
+    medir: (arq, o) => rodarNode("instrumentos/midia.mjs", [arq, ...(o.voz ? ["--voz"] : []), ...(o.fala ? ["--fala", o.fala] : [])]),
+    nao_cobre: "timbre, simpatia e ritmo percebido (ouvido humano). Imagem parada só tem limite com --perfil tutorial. Voz (--voz) e fala contra o texto (--fala texto.txt) são opcionais e caras",
+  },
   imagem: {
     ext: [".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".gif"],
     medir: (arq, o) => rodarPython("sistema", "instrumentos/imagem.py", [arq, ...(o.tamanhoMm ? ["--tamanho-mm", String(o.tamanhoMm)] : [])]),
@@ -62,6 +67,9 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === "--destino") opc.destino = argv[++i];
   else if (argv[i] === "--marca") opc.marca = argv[++i];
   else if (argv[i] === "--tamanho-mm") opc.tamanhoMm = +argv[++i];
+  else if (argv[i] === "--perfil") opc.perfil = argv[++i];
+  else if (argv[i] === "--voz") opc.voz = true;
+  else if (argv[i] === "--fala") opc.fala = argv[++i];
   else if (argv[i] === "--json") opc.json = true;
   else if (argv[i].startsWith("--")) { console.error(`opção desconhecida: ${argv[i]}`); process.exit(2); }
   else pecas.push(argv[i]);
@@ -107,9 +115,13 @@ for (const peca of pecas) {
   else if (!fs.existsSync(peca)) { b.ilegivel = "arquivo não existe"; }
   else if (!nome) { b.erros.push(`nenhum instrumento para "${ext}" ainda`); }
   else {
-    const proj = reguaDoProjeto(peca);
-    if (proj?.erro) b.erros.push(proj.erro);
-    b.regua_projeto = proj?.caminho || null;
+    const proj0 = reguaDoProjeto(peca);
+    if (proj0?.erro) b.erros.push(proj0.erro);
+    b.regua_projeto = proj0?.caminho || null;
+    const cp = comPerfil(opc.perfil || proj0?.regua?.perfil, proj0?.regua);
+    if (cp.erro) b.erros.push(cp.erro);
+    b.perfil = cp.perfil || null;
+    const proj = { ...(proj0 || {}), regua: cp.regua };
     // Marca: a do comando vence a do projeto
     const marca = carregarMarca(opc.marca || proj?.regua?.marca);
     if (marca?.erro) b.erros.push(marca.erro);
@@ -143,7 +155,7 @@ if (opc.json) {
   console.log(JSON.stringify(boletins, null, 1));
 } else {
   for (const b of boletins) {
-    console.log(`\n  ${path.basename(b.peca)}  ·  ${b.formato || "?"}  ·  destino ${b.destino}${b.marca ? `  ·  marca ${b.marca}` : ""}`);
+    console.log(`\n  ${path.basename(b.peca)}  ·  ${b.formato || "?"}  ·  destino ${b.destino}${b.marca ? `  ·  marca ${b.marca}` : ""}${b.perfil ? `  ·  perfil ${b.perfil}` : ""}`);
     console.log("  " + "═".repeat(66));
     if (b.regua_projeto) console.log(`  régua do projeto: ${b.regua_projeto}`);
     const ordem = { reprova: 0, nao_medido: 1, aviso: 2, informa: 3, passa: 4 };
