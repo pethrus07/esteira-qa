@@ -274,3 +274,35 @@ os 27,7s. Os dois têm o maior trecho em **5,1s**, e o e02 congela em
 blocos de 5,07 a 5,1s repetidos a cada 5s: o "5,1s teimoso" das lições,
 assinatura de causa estrutural. A memória registra "aprovado 08/10, 5,6%
 parado". **Não sei qual arquivo foi aprovado.** Conferir antes de enviar.
+
+---
+
+## Planilha (08/10)
+
+A lista de conferência da skill `planilha-premium` virou medida. A âncora
+foi a própria peça que deu origem à skill, o **Corpus Pesquisa X entregue**, e
+ela reprovou em três itens na primeira versão. Dois eram erro meu:
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| filtro com vazio | **10.779** vazias acusadas no Corpus aprovado | contei todo vazio; eram a tarja decorativa (coluna toda vazia) e campos opcionais (diocese, motivo) | medir **supressão**: preencher com o valor de cima e ver se cada valor forma **um bloco contíguo só** |
+| grade serrada | 5 abas acusadas | contei a faixa de grupo e o espaçador, que são desenho | só linhas de dados, e só em **tabela longa** (≥80% das linhas com o mesmo nº de campos); o Panorama é painel |
+| texto cortado | 3.571 por estimativa | "1 caractere por unidade de largura" vale para Calibri 11; o Corpus é Segoe UI 9 | **pixels com a fonte real** (PIL + arquivo TTF) contra a largura OOXML (ECMA-376), conferida em valores conhecidos: coluna padrão = 64 px, "0" em Calibri 11 = 7,0 px |
+
+O terceiro era **real**. Com a medida em pixels, ainda são **3.138
+células cortadas**, com mediana de 9% acima da coluna, p75 de 2,4× e máximo
+de 8×. As piores estão na aba plana: Eclesialidade (858), Temas (659),
+Diocese (294). Ficou como **aviso**: a peça foi aprovada assim e não há
+norma por trás, só a regra da skill, que a própria peça-modelo viola.
+
+### Erro de fórmula: zero, não medido e o Excel como mecanismo real
+
+O openpyxl não grava valor calculado, então "zero `#DIV/0!`" num arquivo
+dele seria zero por falta de medição: o boletim sai **INCOMPLETO**. Para a
+fixture do erro em cache, quem calcula e salva é o **próprio Excel, via
+COM** (invisível, conferido antes que não havia janela aberta).
+
+### Segurança
+
+O instrumento reporta **endereço**, nunca **conteúdo**: a planilha da frota
+tem credencial, e boletim de QA não pode virar vazamento.

@@ -36,7 +36,8 @@ export function medirMarca(formato, medidas, marca, { texto = null, limites = {}
   const cromaNeutro = limites.croma_neutro_max ?? 3;
 
   // ── fontes ────────────────────────────────────────────────────
-  const usadas = formato === "pdf" ? medidas.familias : formato === "dom" ? medidas.fontes_desenhadas : null;
+  const usadas = formato === "pdf" ? medidas.familias : formato === "dom" ? medidas.fontes_desenhadas
+    : formato === "planilha" ? medidas.fontes_usadas : null;
   if (marca.fontes?.length && Array.isArray(usadas)) {
     const fora = usadas.filter((f) => !daMarca(f, marca.fontes));
     M.fontes_fora_da_marca = fora.length;

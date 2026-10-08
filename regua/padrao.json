@@ -323,5 +323,64 @@
       "procedencia": "ancora",
       "porque": "Transcricao reversa contra o texto. ATENCAO a variancia: a mesma cena deu 98,7 / 93,3 / 98,7 — leitura unica baixa pede REGERAR e medir de novo, nao reescrever."
     }
+  },
+  "planilha": {
+    "_nao_cobre": "rotulo repetido nas abas de folhear, barra nominal em tom unico, soma das abas parciais = total, afirmacao da capa conferida na fonte (-> `numeros`), olhar aba por aba.",
+    "_calibracao": "08/10: Corpus Pesquisa X entregue passa em tudo exceto texto_cortado (3.138 celulas, mediana 9% acima da coluna, ate 8x) — por isso texto cortado e AVISO.",
+    "abre_na_primeira_aba": {
+      "igual": true,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Abrir na capa, nao nos dados (skill planilha-premium (lista de conferencia, nascida do Corpus Pesquisa X entregue))."
+    },
+    "abas_com_grade": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Grade visivel e o que faz planilha parecer rascunho (skill planilha-premium (lista de conferencia, nascida do Corpus Pesquisa X entregue))."
+    },
+    "abas_dados_sem_congelar": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Paineis congelados em toda aba de dados. 'Aba de dados' = mais de 30 linhas (ARBITRADO: a skill nao define)."
+    },
+    "rotulo_suprimido_no_filtro": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Armadilha 4: celula vazia nao casa com filtro — filtrar 'Centro-Oeste' perde as linhas com o rotulo suprimido. Medido como VAZIOS EM BLOCOS (supressao), nao como qualquer vazio (dado ausente e legitimo)."
+    },
+    "abas_com_mescla_no_filtro": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Celula mesclada dentro da faixa filtrada quebra filtro e ordenacao."
+    },
+    "abas_com_grade_serrada": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Mais de duas alturas nas linhas de dados de tabela longa = grade serrada (wrap_text) — skill planilha-premium."
+    },
+    "texto_cortado": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Texto que passa da coluna com vizinho ocupado, medido em PIXELS com a fonte real. AVISO e nao reprova: o Corpus Pesquisa X entregue tem 3.138."
+    },
+    "erros_de_formula": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "#REF!, #DIV/0!, #N/A... no valor calculado. Sem cache (arquivo do openpyxl) = NAO MEDIDO: abrir e salvar no Excel."
+    },
+    "formulas_fora_do_padrao": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "mercado",
+      "porque": "Formula que foge do padrao da coluna (ideia do ExceLint, Barowy et al. 2018: precisao ~64%). Conferir: pode ser erro de copia."
+    },
+    "_variancia": "deterministica por construcao (openpyxl + metrica de fonte); fixtures regeneradas 2x deram as mesmas medidas."
   }
 }

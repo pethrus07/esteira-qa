@@ -53,6 +53,11 @@ const FORMATOS = {
     medir: (arq, o) => rodarNode("instrumentos/midia.mjs", [arq, ...(o.voz ? ["--voz"] : []), ...(o.fala ? ["--fala", o.fala] : [])]),
     nao_cobre: "timbre, simpatia e ritmo percebido (ouvido humano). Imagem parada só tem limite com --perfil tutorial. Voz (--voz) e fala contra o texto (--fala texto.txt) são opcionais e caras",
   },
+  planilha: {
+    ext: [".xlsx", ".xlsm"],
+    medir: (arq) => rodarPython("sistema", "instrumentos/planilha.py", [arq]),
+    nao_cobre: "rótulo repetido nas abas de folhear, soma das parciais = total, afirmação da capa contra a fonte, olhar aba por aba",
+  },
   imagem: {
     ext: [".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".gif"],
     medir: (arq, o) => rodarPython("sistema", "instrumentos/imagem.py", [arq, ...(o.tamanhoMm ? ["--tamanho-mm", String(o.tamanhoMm)] : [])]),
