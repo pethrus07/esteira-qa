@@ -18,8 +18,16 @@ Opinião sobre peça não medida não vale, principalmente a minha.
 ## Como usar
 
 ```bash
-node ~/Projetos/esteira-qa/qa.mjs <peça> [outra ...] [--marca ryze] [--destino tela|impressao|grafica] [--json]
+node ~/Projetos/esteira-qa/qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
+# áudio/vídeo: --voz (NISQA) · --fala texto.txt · imagem: --tamanho-mm 150 · HTML como página: --web
 ```
+
+PDF, HTML, imagem, áudio, vídeo, planilha, página no ar (URL) e código
+(arquivo `.js` ou pasta de projeto) já têm instrumento.
+
+- **Perfil** (`--perfil tutorial`, ou `"perfil"` no `.qa.json`): limite
+  ancorado num **tipo** de peça. Os limites de tela morta vieram de
+  tutoriais e só valem com o perfil; fora dele, informam.
 
 - **HTML e PDF da mesma peça juntos** (`x.html x.pdf`): mede os dois e o
   **par** (cobertura). Só o par pega o PDF defasado, com o HTML corrigido e

@@ -33,9 +33,10 @@ Formato sem instrumento sai **INCOMPLETO**, nunca "passou".
 ## A régua em três camadas
 
 ```
-regua/padrao.json            universal — todo limite declara procedência
-  └─ regua/marcas/<marca>    fontes, paleta (ΔE2000), P&B, naming
-       └─ .qa.json            o que é só do projeto: {"marca": "ryze", "pdf": {...}}
+regua/padrao.json              universal — todo limite declara procedência
+  └─ regua/marcas/<marca>      fontes, paleta (ΔE2000), P&B, naming
+       └─ regua/perfis/<tipo>  limites ancorados num TIPO de peça (tutorial…)
+            └─ .qa.json         o que é só do projeto: {"marca": "ryze", "perfil": "tutorial"}
 ```
 
 Procedência impressa ao lado de cada veredito: `norma` (WCAG, ISO, EBU) ·
