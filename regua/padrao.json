@@ -382,5 +382,84 @@
       "porque": "Formula que foge do padrao da coluna (ideia do ExceLint, Barowy et al. 2018: precisao ~64%). Conferir: pode ser erro de copia."
     },
     "_variancia": "deterministica por construcao (openpyxl + metrica de fonte); fixtures regeneradas 2x deram as mesmas medidas."
+  },
+  "web": {
+    "_nao_cobre": "axe cobre ~57% dos problemas de acessibilidade por volume (Deque) — zero violacao NAO e 'acessivel': navegar por teclado e leitor de tela segue humano. CLS/LCP de laboratorio aproximam o p75 de campo, nao o substituem.",
+    "status_http": {
+      "max": 399,
+      "severidade": "reprova",
+      "procedencia": "estrutural"
+    },
+    "axe_critico": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "WCAG 2.x A/AA via axe-core: impacto critico (sem alt, botao sem nome, campo sem rotulo)."
+    },
+    "axe_serio": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "WCAG 2.x A/AA via axe-core: impacto serio (contraste, alvo de toque, idioma)."
+    },
+    "axe_moderado": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "norma"
+    },
+    "alvos_menores_24px": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "WCAG 2.2 SC 2.5.8 (AA): alvo >= 24x24 px, exceto link em linha de texto."
+    },
+    "alvos_menores_44px": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "mercado",
+      "porque": "44 px e Apple HIG / WCAG SC 2.5.5 (AAA)."
+    },
+    "rolagem_horizontal_px": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Pagina mais larga que o celular (390 px): rola de lado. Reescrita 6x nos scripts antigos."
+    },
+    "cls": {
+      "max": 0.1,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "Core Web Vitals: CLS <= 0,1 'bom' (p75 de campo; aqui, laboratorio). O pior entre celular e computador."
+    },
+    "lcp_ms": {
+      "max": 2500,
+      "severidade": "aviso",
+      "procedencia": "norma",
+      "porque": "Core Web Vitals: LCP <= 2,5 s (p75 de campo). Em laboratorio VARIA entre execucoes — aviso, nao reprova."
+    },
+    "peso_kb": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "mercado",
+      "porque": "Sem norma. Referencia: mediana do HTTP Archive ~2 MB por pagina movel."
+    },
+    "erros_console": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural"
+    },
+    "falhas_de_rede": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural"
+    },
+    "_variancia": "medida 08/10, 3 execucoes no institutoautomacao.com.br: LCP 652 / 1016 / 620 ms (faixa ~400 ms, 60%); CLS 0 / 0 / 0,001; peso e requisicoes identicos. Diferenca de LCP menor que ~400 ms entre versoes e RUIDO.",
+    "_calibracao": "08/10: Instituto Automacao (no ar, aprovado) passa em tudo apos tirar o skip link da conta de alvo de toque.",
+    "requisicoes_abortadas": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "ERR_ABORTED: o navegador cancelou (telemetria ao sair, midia lazy). Nao e falha do servidor."
+    }
   }
 }

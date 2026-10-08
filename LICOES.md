@@ -306,3 +306,39 @@ COM** (invisível, conferido antes que não havia janela aberta).
 
 O instrumento reporta **endereço**, nunca **conteúdo**: a planilha da frota
 tem credencial, e boletim de QA não pode virar vazamento.
+
+---
+
+## Web (08/10)
+
+Erro de console tinha sido reescrito 9 vezes, rolagem horizontal 6 e alvo
+de toque 4, **com três limites (24, 44, 56)**. Ficou a norma: WCAG 2.2 SC
+2.5.8 (AA) = 24 px. O 44 (Apple HIG / AAA) é informação.
+
+### Erros de INSTRUMENTO, em ordem
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| CLS (hipótese **errada**) | fixture com 0,067 | suspeitei da leitura depois da rolagem, mudei, e deu 0,067 de novo 3× | a conta da definição (impacto × distância, **relativos à janela**) dá ~0,07: a fixture era fraca, não o instrumento |
+| CLS no celular | **0 em toda página** | com emulação de iPhone (`isMobile`+`hasTouch`) o Chromium **não emite layout-shift**; janela comum de 390 px mediu 0,711 no mesmo arquivo | CLS do celular numa janela comum de 390×844; emulação só para rolagem e alvo de toque |
+| CSP | o instrumento **caiu inteiro** no Instituto | CSP estrita (`script-src 'self'`) bloqueou a injeção do axe | `bypassCSP` no contexto de teste; e falha do axe vira "não medido" sem derrubar o resto |
+| alvo de toque | o Instituto com 1 alvo < 24 px | era o *skip link* "Pular para o conteúdo" (1×1 até ganhar foco), que é **boa prática** | excluir elemento oculto para leitor de tela, como o DOM já fazia |
+| falhas de rede | 9 no site do Desbravando | telemetria da Wix abortada pelo próprio navegador (`ERR_ABORTED`) | filtrar pela natureza do erro, não por lista de domínios |
+
+A hipótese errada fica registrada de propósito: **medir antes de mexer**
+teria evitado a volta. Mudei, medi igual, e só então fiz a conta que
+mostrou que o número estava certo.
+
+### Variância do laboratório
+
+LCP no Instituto, 3 execuções: **652 · 1016 · 620 ms**, uma faixa de ~400 ms
+(60%). Diferença menor que isso entre duas versões de uma página é ruído. Por
+isso o LCP é aviso, não reprovação. CLS, peso e requisições saíram estáveis.
+
+### Calibração no ar
+
+- **institutoautomacao.com.br: PASSOU** (axe 0, CLS ≈ 0, 432 KB em 9
+  requisições).
+- **desbravandoutv.com (Wix): REPROVADO por norma.** 17 contrastes abaixo
+  da WCAG, 1 link sem nome, 1 comando sem nome e 2 alvos < 24 px. É achado
+  real para o cliente ou para a repaginação.

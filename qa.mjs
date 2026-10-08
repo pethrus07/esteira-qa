@@ -53,6 +53,11 @@ const FORMATOS = {
     medir: (arq, o) => rodarNode("instrumentos/midia.mjs", [arq, ...(o.voz ? ["--voz"] : []), ...(o.fala ? ["--fala", o.fala] : [])]),
     nao_cobre: "timbre, simpatia e ritmo percebido (ouvido humano). Imagem parada só tem limite com --perfil tutorial. Voz (--voz) e fala contra o texto (--fala texto.txt) são opcionais e caras",
   },
+  web: {
+    ext: [],  // por URL (http/https) ou por --web num HTML local
+    medir: (arq) => rodarNode("instrumentos/web.mjs", [arq]),
+    nao_cobre: "axe cobre ~57% dos problemas de acessibilidade (Deque): teclado e leitor de tela seguem humanos; CLS/LCP de laboratório aproximam o campo, não o substituem",
+  },
   planilha: {
     ext: [".xlsx", ".xlsm"],
     medir: (arq) => rodarPython("sistema", "instrumentos/planilha.py", [arq]),
@@ -73,6 +78,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (argv[i] === "--marca") opc.marca = argv[++i];
   else if (argv[i] === "--tamanho-mm") opc.tamanhoMm = +argv[++i];
   else if (argv[i] === "--perfil") opc.perfil = argv[++i];
+  else if (argv[i] === "--web") opc.web = true;
   else if (argv[i] === "--voz") opc.voz = true;
   else if (argv[i] === "--fala") opc.fala = argv[++i];
   else if (argv[i] === "--json") opc.json = true;
@@ -98,8 +104,9 @@ const fmt = (v) => Array.isArray(v) ? v.join(", ") : typeof v === "number" ? Str
 
 const boletins = [];
 for (const peca of pecas) {
-  const ext = path.extname(peca).toLowerCase();
-  const nome = Object.keys(FORMATOS).find((k) => FORMATOS[k].ext.includes(ext));
+  const ehUrl = /^https?:\/\//.test(peca);
+  const ext = ehUrl ? "" : path.extname(peca).toLowerCase();
+  const nome = ehUrl || (opc.web && /\.html?$/i.test(peca)) ? "web" : Object.keys(FORMATOS).find((k) => FORMATOS[k].ext.includes(ext));
   const b = { peca, formato: nome || null, destino: opc.destino, checagens: [], erros: [] };
   if (peca.startsWith("par:")) {
     // HTML + PDF da mesma peça: o PDF chegou com tudo que o HTML mostra?
@@ -117,7 +124,7 @@ for (const peca of pecas) {
     }
     b.nao_cobre = "texto que existe nos DOIS e está errado nos dois — isso é conferência contra os dados (`numeros`)";
   }
-  else if (!fs.existsSync(peca)) { b.ilegivel = "arquivo não existe"; }
+  else if (!ehUrl && !fs.existsSync(peca)) { b.ilegivel = "arquivo não existe"; }
   else if (!nome) { b.erros.push(`nenhum instrumento para "${ext}" ainda`); }
   else {
     const proj0 = reguaDoProjeto(peca);
