@@ -153,3 +153,60 @@ denunciou o par.
 
 Patch com regex via `sed` no Git Bash **não aplicou nada**, sem erro. É a
 mesma família do `node -e` que come contrabarra. Regex vai de Edit/Write.
+
+---
+
+## Cor, contraste e marca (08/10)
+
+### O padrão único com divisões
+
+Pedido do Pedro no meio da construção: um padrão ótimo e único, com
+divisões por casa (RYZE, Empresa A, Celiware, Desbravando…). Virou a régua
+em três camadas: **universal → marca → projeto**. A marca entra pelo
+`.qa.json` (`{"marca": "ryze"}`) ou por `--marca`. O que o guia não
+documenta fica em `a_confirmar` e sai no boletim como pergunta.
+
+### Matemática de cor validada antes de usar
+
+O ΔE2000 foi escrito à mão, então foi conferido contra **duas referências
+independentes**: 10 pares publicados de Sharma, Wu & Dalal (2005), incluindo
+o "hue wrap" e o croma zero, e o `scikit-image`. Os 18 casos bateram na
+primeira rodada. Conferir mesmo assim é o método.
+
+### Erros de INSTRUMENTO
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| efeito do observador | a fixture BOA ganhou 1 erro de console e 1 falha de rede | a sonda CDP (`CSS.enable`) faz o Chrome tentar recarregar o documento | fotografar console e rede **antes** de abrir a sonda |
+| "não medido" × "não se aplica" | 2 artes APROVADAS saíram INCOMPLETO | largura da folha cobrada de peça de tela, que não tem folha | tela → não se aplica; impressão sem `@page` → não medido |
+| corte de croma | o quase-preto azulado `#16181D` (croma 3,85) passaria por cinza | corte 3, **arbitrado** | **âncora**: 3 peças P&B aprovadas, 26 cores, croma máx **0,00** → corte 1,0 (limiar do ΔE00) |
+
+### Norma × aprovação humana
+
+O contraste reprovou peças aprovadas: o texto secundário da RYZE
+(`#8B8FA3`, 3,20:1) e o da Empresa A (`#8B86A3`, 3,48:1, com 23 mil
+caracteres no Pesquisa X Vol. I) ficam abaixo dos 4,5:1 da WCAG. **Não é o caso
+dos 25% arbitrados.** Ali o limite era meu, e a peça aprovada provou que
+ele estava errado. Aqui o limite é norma publicada, e a aprovação humana
+julgou outra coisa (conteúdo, estética), não legibilidade. **Âncora calibra
+limite onde não há norma; não revoga norma.** O achado sobe como aviso em
+documento impresso (a WCAG é norma de tela) e como pergunta à marca.
+
+### O que a medição mostrou sobre as marcas
+
+- **Duas RYZEs:** o Atas usa cinzas puros (croma 0), a proposta usa cinzas
+  azulados (croma 7 a 11). Pergunta em aberto.
+- **Dois roxos da Empresa A:** roxo `#6100F9` (planilha) × `#4A3AA7` (Pesquisa X), a ΔE00
+  **11,5** um do outro. São cores distintas, não arredondamento. O Pesquisa X
+  desenha só Segoe UI (fonte do Windows; num Mac sairia outra).
+- **Desbravando confere com o guia:** Anton + Archivo, croma 0,00 em todo
+  o CSS. A cor da página 07 das Parcerias está nas fotos, como o guia manda.
+- **Celiware:** nenhum guia localizado. A régua dela só mede o universal.
+
+### Fonte pedida × fonte desenhada
+
+A pilha do CSS diz o que foi pedido; o Chrome desenha a primeira que tem
+o glifo. `CSS.getPlatformFontsForNode` (CDP) responde o que foi
+**desenhado**. Isso pegou de graça o defeito "a fonte da marca não está na
+máquina": a fixture pede Anton, que não está instalada, e o Chrome desenha
+Impact.

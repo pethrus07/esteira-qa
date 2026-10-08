@@ -1,0 +1,16 @@
+{
+  "nome": "Empresa A",
+  "_fonte": "SEM guia de marca localizado. O que existe sao duas pecas entregues com paletas DIFERENTES — abaixo, como candidatas, ate o Pedro decidir.",
+  "fontes": [],
+  "paleta": [],
+  "neutros_livres": true,
+  "paletas_candidatas": {
+    "planilha (skill planilha-premium, validada 28/08)": ["#6100F9", "#2A0B66", "#F7F4FE", "#C9B2F7", "#EAE1FD", "#EDE9F7", "#332E4E", "#8B86A3", "#B9ADDF"],
+    "relatorio Pesquisa X (render.py)": ["#4A3AA7", "#14161C", "#4A4F5C", "#767C89", "#B4653C", "#0F7A52", "#D03B3B", "#EFEDE7", "#F7F6F3", "#DEDBD4", "#B9B5AB"]
+  },
+  "a_confirmar": [
+    "Dois roxos de marca em pecas entregues: #6100F9 (planilha) e #4A3AA7 (Pesquisa X) — distancia DE00 = 11,5, cores distintas, nao arredondamento. Qual e o da Empresa A?",
+    "Fonte: o Pesquisa X entregue desenha so Segoe UI (fonte do Windows; num Mac sairia outra). E escolha ou ainda falta a fonte da marca?",
+    "Tinta secundaria #8B86A3 da 3,48:1 no branco (WCAG 4,5) — 23 mil caracteres do Pesquisa X Vol. I nela."
+  ]
+}

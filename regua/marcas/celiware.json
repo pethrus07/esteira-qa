@@ -1,0 +1,10 @@
+{
+  "nome": "Celiware",
+  "_fonte": "SEM guia localizado. Memoria celiware-plataforma: 'paleta unificada = roxo/indigo + verde (a da landing)', sem hex. O codigo do celiware-estudio so tem CSS de terceiros embutido (VS Code, GitHub).",
+  "fontes": [],
+  "paleta": [],
+  "neutros_livres": true,
+  "a_confirmar": [
+    "Hex do roxo/indigo e do verde da landing Celiware, e a fonte. Sem isso a regua da marca so mede o universal."
+  ]
+}

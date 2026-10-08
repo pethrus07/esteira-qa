@@ -212,6 +212,75 @@ const r = await page.evaluate(({ midia, folhaPx }) => {
 
   /* ── 6 · lixo de template na tela (qa-visual + documento gerado) ─ */
   const txt = document.body.innerText;
+  /* ── 7 · contraste (WCAG 2.x SC 1.4.3) e inventário de cores ─────
+     Fundo efetivo = sobe pelos ancestrais compondo transparência até achar
+     fundo opaco; sem nenhum, papel/tela branca. Fundo com IMAGEM ou
+     gradiente no caminho não tem cor única → conta como NÃO MEDIDO, não
+     como passou. */
+  const rgba = (c) => {
+    const m = String(c).match(/rgba?\(\s*([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)(?:\s*[,/]\s*([\d.]+%?))?/);
+    if (!m) return null;
+    const a = m[4] === undefined ? 1 : m[4].endsWith("%") ? parseFloat(m[4]) / 100 : +m[4];
+    return { rgb: [+m[1], +m[2], +m[3]], a };
+  };
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const razao = (x, y) => { const [a, b] = [lum(x), lum(y)].sort((p, q) => q - p); return (a + 0.05) / (b + 0.05); };
+  const hex = (rgb) => "#" + rgb.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("").toUpperCase();
+  const fundoDe = (el) => {
+    const camadas = [];
+    for (let a = el; a; a = a.parentElement) {
+      const s = getComputedStyle(a);
+      if (s.backgroundImage && s.backgroundImage !== "none") return null;
+      const c = rgba(s.backgroundColor);
+      if (c && c.a > 0) { camadas.push(c); if (c.a >= 1) break; }
+    }
+    let base = [255, 255, 255];
+    for (const c of camadas.reverse()) base = c.rgb.map((v, i) => v * c.a + base[i] * (1 - c.a));
+    return base;
+  };
+  const cores = {}; // hex → {texto: chars, fundo: px²}
+  const soma = (h, k, v) => { cores[h] = cores[h] || { texto: 0, fundo: 0 }; cores[h][k] += v; };
+  let baixo = 0, baixoChars = 0, semFundo = 0, avaliados = 0, pior = null;
+  const amostrasBaixo = [];
+  const vistosEl = new Set();
+  const w2 = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = w2.nextNode(); n; n = w2.nextNode()) {
+    const el = n.parentElement;
+    const t = n.textContent.replace(/\s/g, "");
+    if (!t || !el || el.dataset.qaCortado || !visivel(el) || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(el.tagName)) continue;
+    const s = getComputedStyle(el);
+    const fg = rgba(s.color);
+    const bg = fundoDe(el);
+    if (!fg) continue;
+    if (!bg) { semFundo += t.length; continue; }
+    const cor = fg.rgb.map((v, i) => v * fg.a + bg[i] * (1 - fg.a));
+    soma(hex(cor), "texto", t.length);
+    const r = razao(cor, bg);
+    const px = parseFloat(s.fontSize), peso = +s.fontWeight || 400;
+    const grande = px >= 24 || (px >= 18.66 && peso >= 700);
+    const minimo = grande ? 3 : 4.5;
+    avaliados += t.length;
+    if (!pior || r < pior.r) pior = { r, txt: t.slice(0, 30) };
+    if (r < minimo) {
+      baixo++; baixoChars += t.length;
+      if (!vistosEl.has(el)) { vistosEl.add(el); amostrasBaixo.push(`${r.toFixed(2)}:1 (mín ${minimo}) ${hex(cor)} sobre ${hex(bg)} "${n.textContent.trim().slice(0, 30)}"`); }
+    }
+  }
+  for (const el of document.body.querySelectorAll("*")) {
+    const c = rgba(getComputedStyle(el).backgroundColor);
+    if (!c || c.a < 1 || !visivel(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width * r.height > 4) soma(hex(c.rgb), "fundo", Math.round(r.width * r.height));
+  }
+  M.contraste_abaixo_wcag = baixo;
+  M.chars_contraste_abaixo_wcag = baixoChars;
+  M.contraste_pior = pior ? +pior.r.toFixed(2) : null;
+  M.chars_fundo_indeterminado = semFundo;
+  X.contraste_abaixo_wcag = amostrasBaixo.slice(0, 6);
+  M.cores_usadas = Object.entries(cores).map(([h, v]) => ({ hex: h, ...v }))
+    .sort((a, b) => (b.texto * 400 + b.fundo / 100) - (a.texto * 400 + a.fundo / 100)).slice(0, 40);
+
   // "null" ficou de fora (08/10): o qa-visual da Mesa de Arton o caçava numa
   // UI de jogo, mas em material técnico é vocabulário (guia de NoSQL).
   const lixo = [...txt.matchAll(/(?<![\p{L}\d])(undefined|NaN|\[object Object\])(?![\p{L}\d])|\{\{[^}]*\}\}|\$\{[^}]*\}/gu)].map((m) => m[0]);
@@ -220,18 +289,60 @@ const r = await page.evaluate(({ midia, folhaPx }) => {
   return { M, X };
 }, { midia, folhaPx });
 
+/* Console e rede são FOTOGRAFADOS AQUI, antes da sonda CDP abaixo.
+   VEREDITO 08/10: CSS.enable faz o Chrome tentar recarregar o documento
+   ("Unsafe attempt to load URL file:///…") e a fixture BOA passou a ter 1
+   erro de console e 1 falha de rede — do instrumento, atribuídos à peça.
+   Efeito do observador: a medida alterava o medido. */
+r.M.erros_console = consoleErros.length;
+r.X.erros_console = consoleErros.slice(0, 5);
+r.M.falhas_de_rede = falhasRede.length;
+r.X.falhas_de_rede = falhasRede.slice(0, 5);
+
+/* ── fonte REALMENTE desenhada ─────────────────────────────────────
+   A pilha do CSS diz o que foi PEDIDO; o Chrome desenha a primeira que tem
+   o glifo — e cai em Segoe UI calado quando a da marca não cobre (pdf-ryze,
+   armadilha 5). CSS.getPlatformFontsForNode responde o que foi desenhado.
+   Um nó por combinação (família pedida, peso, estilo): custo baixo. */
+{
+  const cdp = await page.context().newCDPSession(page);
+  await cdp.send("DOM.enable"); await cdp.send("CSS.enable");
+  const { root } = await cdp.send("DOM.getDocument", { depth: -1 });
+  const ids = await page.evaluate(() => {
+    const vistos = new Map();
+    for (const el of document.body.querySelectorAll("*")) {
+      if (![...el.childNodes].some((c) => c.nodeType === 3 && c.textContent.trim())) continue;
+      const s = getComputedStyle(el);
+      if (s.display === "none" || s.visibility === "hidden") continue;
+      const k = `${s.fontFamily}|${s.fontWeight}|${s.fontStyle}`;
+      if (!vistos.has(k)) { el.dataset.qaFonte = String(vistos.size); vistos.set(k, el.textContent.trim().length); }
+    }
+    return vistos.size;
+  });
+  const desenhadas = {};
+  for (let i = 0; i < ids; i++) {
+    try {
+      const { nodeId } = await cdp.send("DOM.querySelector", { nodeId: root.nodeId, selector: `[data-qa-fonte="${i}"]` });
+      const { fonts } = await cdp.send("CSS.getPlatformFontsForNode", { nodeId });
+      for (const f of fonts) desenhadas[f.familyName] = (desenhadas[f.familyName] || 0) + f.glyphCount;
+    } catch { /* nó sumiu: segue */ }
+  }
+  r.M.fontes_desenhadas = Object.entries(desenhadas).sort((a, b) => b[1] - a[1]).map(([f]) => f);
+  r.X.fontes_desenhadas = Object.entries(desenhadas).sort((a, b) => b[1] - a[1]).map(([f, n]) => `${f}: ${n} glifos (amostra)`).slice(0, 8);
+}
+
 /* --texto: grava o texto RENDERIZADO (innerText na largura da folha) para
    a checagem de cobertura contra o PDF. innerText ignora o overflow — o
    texto cortado ESTÁ aqui e não estará no PDF, que é o que se quer pegar. */
 const saidaTexto = pega("--texto", null);
 if (saidaTexto) fs.writeFileSync(saidaTexto, await page.evaluate(() => document.body.innerText), "utf8");
 
-r.M.erros_console = consoleErros.length;
-r.X.erros_console = consoleErros.slice(0, 5);
-r.M.falhas_de_rede = falhasRede.length;
-r.X.falhas_de_rede = falhasRede.slice(0, 5);
 await browser.close();
 
-const naoAplica = [];
-if (r.M.excesso_largura_px === undefined) r.M.excesso_largura_px = null; // sem @page: não medido
+/* Peça de TELA não tem folha: largura excedente "não se aplica". Peça de
+   IMPRESSÃO sem @page tem folha, só não se sabe qual: "não medido".
+   VEREDITO 08/10: a 1ª versão chamava as duas de não medido, e duas artes
+   aprovadas do Desbravando saíram INCOMPLETO por uma checagem sem sentido. */
+const naoAplica = midia === "print" ? [] : ["excesso_largura_px"];
+if (r.M.excesso_largura_px === undefined) r.M.excesso_largura_px = null;
 sair({ instrumento: "dom", arquivo: alvo, midia, medidas: r.M, exemplos: r.X, nao_aplica: naoAplica });

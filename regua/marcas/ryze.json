@@ -1,0 +1,12 @@
+{
+  "nome": "RYZE",
+  "_fonte": "Guia de marca v1.1 (abr/2026), C:/Users/olive/Downloads/Identidade completa.html — resumido na memoria ryze-identidade-visual.",
+  "fontes": ["Space Grotesk", "Plus Jakarta Sans", "JetBrains Mono"],
+  "paleta": ["#0D0D0D", "#FFB700", "#CC9200", "#FFD666", "#6A28C9", "#8B5CF6", "#4C1D95", "#1A1A1A", "#F5F5F5", "#FAFAFA", "#FFFFFF"],
+  "neutros_livres": true,
+  "_neutros": "O guia lista neutros #1A1A1A -> #F5F5F5: qualquer cinza (croma <= croma_neutro_max) e da marca.",
+  "a_confirmar": [
+    "A proposta Desbravando (RYZE) usa cinzas AZULADOS (#8B8FA3, #55596B, croma 11); o Atas (RYZE) usa cinzas puros (croma 0). Qual e o padrao? Hoje os azulados saem como aviso 'cor fora da paleta'.",
+    "O texto secundario #8B8FA3 da proposta da 3,20:1 no branco (WCAG pede 4,5). Escurecer o tom secundario da marca?"
+  ]
+}

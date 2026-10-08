@@ -158,6 +158,18 @@
       "severidade": "aviso",
       "procedencia": "estrutural",
       "porque": "Recurso que nao baixou (fonte do Google sem internet, imagem). Em documento, o PDF pode sair sem ele."
+    },
+    "contraste_abaixo_wcag": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "norma",
+      "porque": "WCAG 2.x SC 1.4.3: 4,5:1 texto normal, 3:1 texto grande (>=24px ou >=18,66px negrito). Aviso em documento impresso (a norma e de tela); o instrumento web reprova."
+    },
+    "chars_fundo_indeterminado": {
+      "max": 0,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "Texto sobre imagem ou gradiente: contraste NAO medido (nao conta como passou)."
     }
   },
   "cobertura": {
@@ -174,6 +186,39 @@
       "severidade": "reprova",
       "procedencia": "ancora",
       "porque": "Numero do HTML ausente no PDF = PDF DEFASADO (HTML corrigido, PDF velho). O pior erro da serie no documento gerado de dados."
+    }
+  },
+  "marca": {
+    "_como_ler": "So entra quando a peca declara marca (.qa.json {\"marca\":...} ou --marca). Os dados de cada marca ficam em regua/marcas/; aqui ficam os LIMITES das checagens de marca.",
+    "_limites": {
+      "tolerancia_de00": 2,
+      "_tolerancia": "norma/literatura: DE00 ~1 imperceptivel, ~2 'so notavel' (Sharma 2005; ISO 12647-2:2013 adota DE00). Em tela, cor de marca e token exato: acima de 2 e outra cor.",
+      "croma_neutro_max": 1,
+      "_croma": "ANCORA 08/10: 3 pecas P&B APROVADAS do Desbravando (Expedicao Origens, Parcerias Veiculo Oficial, Manifesto) = 26 cores de CSS, croma max 0,00. Corte em 1,0 = limiar de perceptibilidade do DE00. Substitui o 3 ARBITRADO, que deixava passar o quase-preto azulado #16181D (3,85)."
+    },
+    "fontes_fora_da_marca": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Fonte desenhada que nao e da marca. Causa tipica: glifo fora do subset cai em Segoe UI calado (pdf-ryze, armadilha 5), ou @font-face que nao carregou."
+    },
+    "cores_fora_da_paleta": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "ancora",
+      "porque": "Cor de CSS a mais de DE00 2 de qualquer cor do guia. Aviso, nao reprova: divergencia vira pergunta, nao defeito."
+    },
+    "cores_em_peca_pb": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Peca do nucleo P&B com cor de CSS. 'A unica cor, quando ha, vem da fotografia' (guia)."
+    },
+    "termos_proibidos": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Naming da marca violado."
     }
   }
 }

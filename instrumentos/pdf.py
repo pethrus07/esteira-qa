@@ -247,6 +247,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("arquivo")
     ap.add_argument("--destino", default="tela", choices=["tela", "impressao", "grafica"])
+    ap.add_argument("--texto", help="grava o texto extraído (para o naming da marca)")
     a = ap.parse_args()
     r = medir(a.arquivo, a.destino)
+    if a.texto and not r.get("ilegivel"):
+        with open(a.texto, "w", encoding="utf-8") as f:
+            f.write("\n".join(p.get_text() for p in fitz.open(a.arquivo)))
     sys.stdout.write(json.dumps(r, ensure_ascii=True, indent=1))

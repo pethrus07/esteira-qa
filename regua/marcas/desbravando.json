@@ -1,0 +1,15 @@
+{
+  "nome": "Desbravando",
+  "_fonte": "SPEC_MD embutido em estudio-briefing-desbravando-utv/index.html, extraido para desbravando-site/marca/IDENTIDADE_VISUAL.md — resumido na memoria desbravando-identidade-visual.",
+  "fontes": ["Anton", "Archivo"],
+  "paleta": ["#000000", "#FFFFFF"],
+  "neutros_livres": true,
+  "pb_estrito": true,
+  "_pb_estrito": "Nucleo (deck, proposta, guia, documento, site) e P&B ESTRITO: 'sem nenhuma cor de destaque; a unica cor, quando ha, vem da fotografia'. Foto nao entra nesta conta (so cor de CSS). Peca de rede social/evento: projeto declara pb_estrito=false.",
+  "termos_proibidos": [
+    { "regex": "(?<![\\p{L}])(a|à|da|na|pela|dessa|desta|nessa|nesta)\\s+Desbravando(?![\\p{L}])", "porque": "Naming: 'o Desbravando', no MASCULINO. Nunca 'a Desbravando'." }
+  ],
+  "a_confirmar": [
+    "Acento raro azul #2F80ED + verde #1FA35A: 'hex a confirmar no arquivo-fonte do logo' (o proprio guia). Fora da paleta ate confirmar."
+  ]
+}

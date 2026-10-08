@@ -2,3 +2,5 @@ node_modules/
 fixtures/**/*.pdf
 __pycache__/
 *.pyc
+fixtures/dom/_pdf/
+fixtures/_tmp-cobertura/
