@@ -60,6 +60,19 @@ export function medirMarca(formato, medidas, marca, { texto = null, limites = {}
     else naoAplica.push("cores_fora_da_paleta");
     if (marca.pb_estrito) { M.cores_em_peca_pb = cromaticas.length; X.cores_em_peca_pb = cromaticas.slice(0, 8); }
     else naoAplica.push("cores_em_peca_pb");
+  } else if (formato === "imagem" && Array.isArray(medidas.cores_dominantes) && marca.paleta?.length) {
+    // Só cor que cobre >= 5% da arte: foto tem mil cores legítimas; a
+    // paleta da marca aparece nos blocos chapados grandes. Sem P&B aqui:
+    // na imagem não dá para separar a foto (cor permitida) do grafismo.
+    const fora = [];
+    for (const c of medidas.cores_dominantes.filter((x) => x.pct >= 5)) {
+      const rgb = hexParaRgb(c.hex);
+      if (croma(rgb) <= cromaNeutro && marca.neutros_livres) continue;
+      const p = maisProxima(rgb, marca.paleta);
+      if (p && p.de > tol) fora.push(`${c.hex} (${c.pct}%) → ${p.hex} ΔE00 ${p.de.toFixed(1)}`);
+    }
+    M.cores_fora_da_paleta = fora.length; X.cores_fora_da_paleta = fora.slice(0, 6);
+    naoAplica.push("cores_em_peca_pb");
   } else naoAplica.push("cores_fora_da_paleta", "cores_em_peca_pb");
 
   // ── termos proibidos (naming) ───────────────────────────────────

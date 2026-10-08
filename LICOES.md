@@ -210,3 +210,26 @@ o glifo. `CSS.getPlatformFontsForNode` (CDP) responde o que foi
 **desenhado**. Isso pegou de graça o defeito "a fonte da marca não está na
 máquina": a fixture pede Anton, que não está instalada, e o Chrome desenha
 Impact.
+
+---
+
+## Imagem (08/10)
+
+- **BRISQUE/NIQE ficaram de fora para arte.** São preditores treinados em
+  fotografia natural. Em arte tipográfica, o número sairia confiante e sem
+  sentido: o mesmo erro do UTMOS, calibrado em inglês, julgando voz pt-BR.
+  Instrumento só vale dentro do domínio em que foi calibrado.
+- **A qualidade do JPEG tem verdade conhecida**, e por isso foi o
+  instrumento mais fácil de validar: salvo com q, ele tem de devolver q.
+  Devolveu, mas o detector de "tabela padrão" falhou no q=35. Causa: a
+  libjpeg calcula a escala com **divisão inteira** (`5000 / q` em C), e eu
+  usei divisão real. O número acertava por proximidade, não por igualdade.
+  Corrigido e conferido em 9 qualidades, inclusive nas bordas 49/50/51:
+  erro 0 em todas.
+- **Mecanismo real para o perfil de cor:** o perfil DCI-P3 da tela do
+  próprio XPS. Imagem exportada com ele muda de cor quando o WhatsApp ou o
+  Instagram descartam o perfil.
+- **Calibração:** 13 imagens publicadas do Instituto, todas limpas. O
+  limite de qualidade 80 (mercado) dá aviso em 1 delas (q=70, tabela
+  própria, provavelmente a foto de imprensa original). Fica como aviso
+  até ter âncora com veredito.

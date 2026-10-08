@@ -48,6 +48,11 @@ const FORMATOS = {
       o.midia || (/@page\b/.test(fs.readFileSync(arq, "utf8")) ? "print" : "screen"), ...comTexto(o)]),
     nao_cobre: "se o PDF entregue é DESTE HTML (PDF defasado) → passar o PDF junto; contraste e acessibilidade de tela → `web` (a construir)",
   },
+  imagem: {
+    ext: [".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".gif"],
+    medir: (arq, o) => rodarPython("sistema", "instrumentos/imagem.py", [arq, ...(o.tamanhoMm ? ["--tamanho-mm", String(o.tamanhoMm)] : [])]),
+    nao_cobre: "nitidez percebida, texto legível e área segura de rede social (medir o HTML de origem), gosto",
+  },
 };
 
 const argv = process.argv.slice(2);
@@ -56,6 +61,7 @@ const pecas = [];
 for (let i = 0; i < argv.length; i++) {
   if (argv[i] === "--destino") opc.destino = argv[++i];
   else if (argv[i] === "--marca") opc.marca = argv[++i];
+  else if (argv[i] === "--tamanho-mm") opc.tamanhoMm = +argv[++i];
   else if (argv[i] === "--json") opc.json = true;
   else if (argv[i].startsWith("--")) { console.error(`opção desconhecida: ${argv[i]}`); process.exit(2); }
   else pecas.push(argv[i]);

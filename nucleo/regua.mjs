@@ -52,6 +52,13 @@ export function julgar(formato, medidas, { destino = "tela", projeto = null, nao
     let v = medidas[id];
     const c = { id, valor: v, severidade: L.severidade || "aviso", procedencia: L.procedencia || "arbitrado",
                 porque: L.porque, origem: doProjeto[id] ? "projeto" : "padrao" };
+    if (L.permitidos && typeof v === "string") {
+      // valor único contra lista exata — ex.: dimensões "1080x1920"
+      c.limite = `∈ {${L.permitidos.join(", ")}}`;
+      c.estado = L.permitidos.includes(v) ? "passa" : c.severidade;
+      checagens.push(c);
+      continue;
+    }
     if (L.permitidos && Array.isArray(v)) {
       const norm = (s) => s.replace(/[\s_-]/g, "").toLowerCase();
       const fora = v.filter((x) => !L.permitidos.some((p) => norm(x).startsWith(norm(p))));

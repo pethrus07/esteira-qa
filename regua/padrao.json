@@ -220,5 +220,57 @@
       "procedencia": "ancora",
       "porque": "Naming da marca violado."
     }
+  },
+  "imagem": {
+    "_variancia": "medida 08/10: 3 execucoes sobre uma foto publicada do Instituto deram JSON identico. Deterministico.",
+    "_nao_cobre": "nitidez percebida, texto legivel na arte, area segura de rede social (medir no HTML de origem com `dom`), gosto. BRISQUE/NIQE fora: treinados em foto natural, nao em arte.",
+    "modo_cmyk": {
+      "igual": false,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "CMYK em tela: navegador e WhatsApp convertem cada um de um jeito; sem perfil a cor e indefinida.",
+      "por_destino": {
+        "grafica": {
+          "severidade": "informa",
+          "porque": "Grafica pode pedir CMYK; conferir o perfil que ela exige."
+        }
+      }
+    },
+    "perfil_nao_srgb": {
+      "igual": false,
+      "severidade": "aviso",
+      "procedencia": "mercado",
+      "porque": "Perfil que nao e sRGB (ex.: o DCI-P3 do monitor) muda as cores quando a plataforma descarta o perfil (WhatsApp, Instagram). Exportar em sRGB."
+    },
+    "jpeg_qualidade_estimada": {
+      "min": 80,
+      "severidade": "aviso",
+      "procedencia": "mercado",
+      "porque": "Convencao de exportacao web 80-90; abaixo de ~70 o bloco 8x8 aparece em gradiente e foto. Sem ancora propria ainda."
+    },
+    "ppi_efetivo": {
+      "min": null,
+      "severidade": "informa",
+      "procedencia": "mercado",
+      "por_destino": {
+        "impressao": {
+          "min": 300,
+          "severidade": "aviso",
+          "porque": "Convencao grafica: 2 x lineatura de 150 lpi."
+        },
+        "grafica": {
+          "min": 300,
+          "severidade": "reprova",
+          "porque": "Convencao grafica: 2 x 150 lpi. Ancora: adesivo a ~30 dpi devolvido pela grafica (21/08)."
+        }
+      }
+    },
+    "metadado_sensivel": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "GPS, camera ou autor no EXIF. Em peca publica ou de portfolio, vaza local e aparelho (regra LGPD do portfolio). Remover antes de publicar."
+    },
+    "_calibracao": "08/10: 13 imagens publicadas do Instituto Automacao: RGB, sem perfil, sem EXIF sensivel, q 70-82 (12 com tabela IJG q=82 do pipeline do site). O limite 80 (mercado) da aviso em 1 de 13 publicadas — mantido como aviso ate ter ancora com veredito."
   }
 }
