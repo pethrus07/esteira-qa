@@ -5,8 +5,10 @@
   "type": "module",
   "description": "Esteira de QA universal — instrumentos que REPROVAM peça quebrada antes de chegar a uma pessoa",
   "dependencies": {
-    "playwright": "1.62.0",
-    "axe-core": "^4.10.0"
+    "axe-core": "^4.10.0",
+    "eslint": "^9.39.5",
+    "globals": "^15.15.0",
+    "playwright": "1.62.0"
   },
   "scripts": {
     "test": "node testes/todos.mjs",

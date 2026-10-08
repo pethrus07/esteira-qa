@@ -28,7 +28,8 @@ const CASOS = [
 let falhas = 0;
 for (const [arq, esperado] of CASOS) {
   const b = qa(arq);
-  let ok = Boolean(b) && naoPassa(b) === esperado;
+  // sem checagem medida não há "limpa" (o buraco do teste de código, 08/10)
+  let ok = Boolean(b) && b.veredito !== "ILEGIVEL" && b.checagens.length > 0 && naoPassa(b) === esperado;
   // o CLS do celular tem de ser medido de verdade (a emulação de iPhone dava 0)
   if (ok && arq.startsWith("deslocamento")) ok = b.medidas.cls_celular > b.medidas.cls_computador && b.medidas.cls_celular > 0.1;
   if (!ok) falhas++;

@@ -37,7 +37,8 @@ let falhas = 0;
 for (const [arq, esperado] of CASOS) {
   if (!fs.existsSync(path.join(DIR, arq))) { console.log(`  · ${arq}  PULADO (fixture não gerada — Excel ausente?)`); continue; }
   const b = qa(arq);
-  let ok = Boolean(b) && naoPassa(b) === esperado;
+  // sem checagem medida não há "limpa" (o buraco do teste de código, 08/10)
+  let ok = Boolean(b) && b.veredito !== "ILEGIVEL" && b.checagens.length > 0 && naoPassa(b) === esperado;
   if (ok && arq === "formula-sem-cache.xlsx") ok = b.checagens.find((c) => c.id === "erros_de_formula").estado === "nao_medido" && b.veredito === "INCOMPLETO";
   if (ok && arq === "formula-com-erro.xlsx") ok = b.medidas.erros_de_formula === 1 && b.veredito === "REPROVADO";
   if (!ok) falhas++;

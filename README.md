@@ -4,7 +4,8 @@ Mede qualquer peça antes de ela chegar a uma pessoa, e **reprova** o que
 está quebrado. Gosto, tom e adequação continuam sendo julgamento humano.
 
 ```bash
-node qa.mjs <peça> [outra ...] [--marca ryze] [--destino tela|impressao|grafica] [--json]
+node qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
+# áudio/vídeo: --voz (NISQA) · --fala texto.txt (transcrição reversa) · imagem: --tamanho-mm 150
 npm test        # prova que cada instrumento enxerga o que diz enxergar
 ```
 
@@ -15,18 +16,17 @@ a medição de cada lição, em [`LICOES.md`](LICOES.md).
 
 ## Formatos
 
-| formato | extensão | instrumento | estado |
+| formato | entrada | instrumento | estado |
 |---|---|---|---|
-| PDF | `.pdf` | `instrumentos/pdf.py` | ✓ 8 fixtures · variância 0 · calibrado em 10 PDFs reais |
-| documento HTML / página | `.html` | `instrumentos/dom.mjs` | ✓ 11 fixtures · variância 0 · calibrado em 8 peças aprovadas |
+| PDF | `.pdf` | `instrumentos/pdf.py` | ✓ 8 fixtures · variância 0 · 10 PDFs reais |
+| documento HTML | `.html` (com `@page`) | `instrumentos/dom.mjs` | ✓ 11 fixtures · variância 0 · 8 peças aprovadas |
 | par HTML × PDF | os dois juntos | `instrumentos/cobertura.py` | ✓ 4 casos · 0 falso positivo em 4 pares reais |
 | marca | `--marca` / `.qa.json` | `nucleo/marca.mjs` + `regua/marcas/` | ✓ RYZE, Desbravando · parcial: Empresa A, Celiware |
-| imagem / arte | `.png .jpg .webp .svg` | — | a construir |
-| áudio | `.wav .mp3 .m4a` | protótipo em `qa-empresa/tutoriais/esteira` | a generalizar |
-| vídeo | `.mp4 .webm` | protótipo em `qa-empresa/tutoriais/esteira` | a generalizar |
-| planilha | `.xlsx` | checklist da skill `planilha-premium` | a transformar em medição |
-| web (tela, acessibilidade, peso) | URL | — | a construir |
-| código | `.js .ts .mjs` | — | a construir |
+| imagem / arte | `.png .jpg .webp .tif` | `instrumentos/imagem.py` | ✓ 10 casos · JPEG validado contra verdade conhecida · 13 publicadas |
+| áudio e vídeo | `.mp4 .webm .wav .mp3 .m4a` | `instrumentos/midia.mjs` | ✓ 11 casos · **equivalente ao protótipo** · `--perfil tutorial` |
+| planilha | `.xlsx` | `instrumentos/planilha.py` | ✓ 10 casos (o `#DIV/0!` em cache vem do próprio Excel) · Corpus Pesquisa X |
+| web | URL, ou `--web` num HTML | `instrumentos/web.mjs` | ✓ 6 casos · variância do LCP medida · 2 sites no ar |
+| código | `.js .mjs` ou uma pasta | `instrumentos/codigo.mjs` | ✓ 7 casos · TypeScript ainda **não medido** (aparece como aviso) |
 
 Formato sem instrumento sai **INCOMPLETO**, nunca "passou".
 

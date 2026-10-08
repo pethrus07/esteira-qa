@@ -461,5 +461,49 @@
       "procedencia": "estrutural",
       "porque": "ERR_ABORTED: o navegador cancelou (telemetria ao sair, midia lazy). Nao e falha do servidor."
     }
+  },
+  "codigo": {
+    "_nao_cobre": "logica certa, teste passando, tipos (TypeScript fica fora ate usar o tsc do projeto), estilo. Credencial SEM prefixo fixo (token do Cloudflare, senha solta) nao e detectada: so os padroes de prefixo do gitleaks.",
+    "_calibracao": "08/10: esteira-qa, atas, eventos-desbravando-utv e instituto-automacao: 0 sintaxe, 0 nao declarada, 0 credencial. node --check PASSA no arquivo com PY_WHISPER nao declarada; o instrumento pega.",
+    "erros_de_sintaxe": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural"
+    },
+    "variaveis_nao_declaradas": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "PY_WHISPER e mesmaChave nos tutoriais: node --check passa, quebra so rodando."
+    },
+    "codigo_morto_ou_debugger": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "debugger esquecido, chave duplicada em objeto, codigo inalcancavel."
+    },
+    "credenciais_no_codigo": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "mercado",
+      "porque": "Padroes de prefixo fixo (gitleaks). Reportado como arquivo:linha + tipo, nunca o valor. Revogar e tirar do historico, nao so do arquivo."
+    },
+    "variaveis_sem_uso": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural"
+    },
+    "console_log": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "Em CLI e normal; em pagina publicada, conferir."
+    },
+    "arquivos_ts_nao_medidos": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "TypeScript NAO medido por este instrumento. Aviso e nao informa: um PASSOU com 71 arquivos .ts sem medir seria zero por falta de medicao (instituto-automacao, 08/10)."
+    }
   }
 }

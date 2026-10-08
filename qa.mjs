@@ -58,6 +58,11 @@ const FORMATOS = {
     medir: (arq) => rodarNode("instrumentos/web.mjs", [arq]),
     nao_cobre: "axe cobre ~57% dos problemas de acessibilidade (Deque): teclado e leitor de tela seguem humanos; CLS/LCP de laboratório aproximam o campo, não o substituem",
   },
+  codigo: {
+    ext: [".js", ".mjs", ".cjs", ".jsx"],  // ou uma PASTA de projeto (mede o que o git versiona)
+    medir: (arq) => rodarNode("instrumentos/codigo.mjs", [arq]),
+    nao_cobre: "lógica, testes, tipos (TypeScript não medido), estilo; credencial sem prefixo fixo (ex.: token do Cloudflare)",
+  },
   planilha: {
     ext: [".xlsx", ".xlsm"],
     medir: (arq) => rodarPython("sistema", "instrumentos/planilha.py", [arq]),
@@ -106,7 +111,9 @@ const boletins = [];
 for (const peca of pecas) {
   const ehUrl = /^https?:\/\//.test(peca);
   const ext = ehUrl ? "" : path.extname(peca).toLowerCase();
-  const nome = ehUrl || (opc.web && /\.html?$/i.test(peca)) ? "web" : Object.keys(FORMATOS).find((k) => FORMATOS[k].ext.includes(ext));
+  const ehPasta = !ehUrl && fs.existsSync(peca) && fs.statSync(peca).isDirectory();
+  const nome = ehUrl || (opc.web && /\.html?$/i.test(peca)) ? "web" : ehPasta ? "codigo"
+    : Object.keys(FORMATOS).find((k) => FORMATOS[k].ext.includes(ext));
   const b = { peca, formato: nome || null, destino: opc.destino, checagens: [], erros: [] };
   if (peca.startsWith("par:")) {
     // HTML + PDF da mesma peça: o PDF chegou com tudo que o HTML mostra?

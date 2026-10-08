@@ -342,3 +342,43 @@ isso o LCP é aviso, não reprovação. CLS, peso e requisições saíram estáv
 - **desbravandoutv.com (Wix): REPROVADO por norma.** 17 contrastes abaixo
   da WCAG, 1 link sem nome, 1 comando sem nome e 2 alvos < 24 px. É achado
   real para o cliente ou para a repaginação.
+
+---
+
+## Código (08/10)
+
+- **Análise estática, nunca execução.** As duas lições dos tutoriais se
+  contradiziam: "verificar importando" (o `node --check` não pega variável
+  não declarada) e "não importe um script" (importar o `gerar.mjs` disparou
+  uma geração em produção). O ESLint (`no-undef`) resolve as duas sem
+  executar nada. **Provado no teste:** o `node --check` PASSA no arquivo
+  com `PY_WHISPER` não declarada, e o instrumento pega.
+- **Instrumento de mercado em vez de analisador meu.** O ESLint foi
+  rodado com `overrideConfigFile` (régua universal, sem ler a config de cada
+  projeto). Credencial: padrões de prefixo fixo, como os do gitleaks.
+- **TypeScript não medido aparece.** O instituto-automacao tem 220
+  arquivos e só 8 JS. Um "passou" sem dizer que 71 `.ts` ficaram de fora
+  seria zero por falta de medição: virou **aviso**.
+
+### O teste que não testava, de novo
+
+1. A busca de credencial ignorava `fixtures/` junto com o ESLint, e uma
+   chave real numa pasta `fixtures` passaria. Agora o ESLint pula
+   `fixtures/` (erro de sintaxe de propósito), mas a busca de credencial
+   não pula. A única exceção é a chave de **exemplo** documentada (sufixo
+   `EXAMPLE`), como no gitleaks.
+2. Ao renomear a fixture, o patch por script **falhou calado**
+   (contrabarra), e o teste **passou mesmo assim**: arquivo inexistente →
+   ILEGÍVEL → nenhuma checagem → "nenhuma ruim" = esperado vazio. **Arquivo
+   que não existe passou como limpo.** Conserto: sem checagem medida não há
+   "limpo". Provado por mutação (apagar o arquivo faz o teste falhar). O
+   mesmo buraco existia nos testes de planilha e web, e foi fechado nos dois.
+
+A chave de formato real usada no teste nasce numa pasta temporária e nunca
+é commitada. O boletim é conferido para não conter o valor.
+
+### Calibração
+
+esteira-qa, atas, eventos-desbravando-utv e instituto-automacao: 0 erro
+de sintaxe, 0 variável não declarada, 0 credencial com prefixo conhecido.
+**Não cobre** token sem prefixo fixo (o do Cloudflare, por exemplo).
