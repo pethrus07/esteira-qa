@@ -12,7 +12,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CASA = os.homedir();
@@ -27,6 +27,19 @@ export const PY = {
   mos: path.join(CASA, ".venvs/mos/Scripts/python.exe"),
 };
 export const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+
+/** Imprime HTML em PDF pelo MESMO caminho da produção (RYZE/Atas):
+    chrome.exe --print-to-pdf. O page.pdf do Playwright não reproduziu
+    defeitos que este reproduz (LICOES, PDF). Caminho de saída absoluto:
+    relativo, o Chrome grava em outra pasta e não avisa. */
+export function imprimirPdf(html, pdf) {
+  fs.rmSync(pdf, { force: true });
+  spawnSync(CHROME, ["--headless", "--disable-gpu", "--no-pdf-header-footer",
+    "--run-all-compositor-stages-before-draw", "--virtual-time-budget=10000",
+    "--allow-file-access-from-files", `--print-to-pdf=${path.resolve(pdf)}`,
+    pathToFileURL(path.resolve(html)).href], { stdio: "ignore" });
+  return fs.existsSync(pdf);
+}
 
 /** Roda um instrumento Python e devolve o JSON. Falha vira {erro}, nunca zero. */
 export function rodarPython(qual, script, args = [], { timeout = 600_000 } = {}) {

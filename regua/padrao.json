@@ -14,49 +14,166 @@
   "pdf": {
     "_variancia": "medida 08/10: 3 execucoes sobre o Pesquisa X Vol. I (79 p.) deram JSON byte a byte identico. Instrumento deterministico.",
     "fontes_type3_defeituosas": {
-      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
       "porque": "Type3 sem /ToUnicode = texto nao pesquisavel; glifo em bitmap = serrilhado na impressao."
     },
     "chars_texto_em_type3": {
-      "max": 0, "severidade": "aviso", "procedencia": "estrutural",
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
       "porque": "Type3 vetorial com /ToUnicode e pesquisavel e nitido (medido 08/10 nos PDFs do Atas), mas sem hinting em tela e fora de PDF/A-1. Causa tipica: fonte variavel do Google Fonts (css2). Conserto: congelar em TTF estatico (pdf-ryze)."
     },
     "fontes_nao_embutidas": {
-      "max": 0, "severidade": "reprova", "procedencia": "norma",
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "norma",
       "porque": "ISO 19005 (PDF/A) exige toda fonte embutida; nao embutida e substituida pelo leitor e muda metrica."
     },
     "glifo_sem_mapeamento": {
-      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
       "porque": "Caractere sem glifo na fonte sai como .notdef (U+0000 no texto). Ancora: 56 bullets U+F0B7 sumidos no Pesquisa X."
     },
-    "glifo_substituto_fffd": { "max": 0, "severidade": "reprova", "procedencia": "estrutural" },
+    "glifo_substituto_fffd": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural"
+    },
     "caracteres_uso_privado": {
-      "max": 0, "severidade": "aviso", "procedencia": "estrutural",
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
       "porque": "Uso privado (U+E000-F8FF) quase sempre e simbolo colado do Word; aviso porque fonte de icone usa de proposito."
     },
-    "texto_fora_da_pagina": { "max": 0, "severidade": "reprova", "procedencia": "estrutural" },
+    "texto_fora_da_pagina": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural"
+    },
     "paginas_sem_tinta": {
-      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
       "porque": "Folha sem nenhuma tinta = transbordo que empurrou pagina extra. Medido por tinta, nao por contagem de caracteres (os limites 120 e 40 dos scripts antigos eram arbitrados e reprovariam folha de abertura).",
-      "por_destino": { "grafica": { "severidade": "aviso", "porque": "verso em branco e legitimo em impressao frente e verso" } }
-    },
-    "paginas_com_tinta_sem_texto": {
-      "max": 0, "severidade": "informa", "procedencia": "estrutural",
-      "porque": "Pagina que e so imagem: pode ser arte (normal) ou texto rasterizado (defeito). Olhar."
-    },
-    "tamanhos_distintos": { "max": 1, "severidade": "aviso", "procedencia": "estrutural",
-      "porque": "Documento com folhas de tamanhos diferentes: as vezes e encarte paisagem de proposito." },
-    "ppi_efetivo_minimo": {
-      "min": null, "severidade": "informa", "procedencia": "mercado",
-      "porque": "Em tela, ppi so importa relativo ao zoom. Fundo de pagina (>=90% da folha) fica fora da conta.",
       "por_destino": {
-        "impressao": { "min": 300, "severidade": "aviso", "procedencia": "mercado",
-          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Sem ancora propria ainda." },
-        "grafica": { "min": 300, "severidade": "reprova", "procedencia": "mercado",
-          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Ancora: reclamacao da grafica de 21/08 (adesivo a ~30 dpi)." }
+        "grafica": {
+          "severidade": "aviso",
+          "porque": "verso em branco e legitimo em impressao frente e verso"
+        }
       }
     },
-    "titulo_metadado": { "igual": true, "severidade": "informa", "procedencia": "norma",
-      "porque": "PDF/UA (ISO 14289) exige dc:title; leitor de tela anuncia o titulo, nao o nome do arquivo." }
+    "paginas_com_tinta_sem_texto": {
+      "max": 0,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "Pagina que e so imagem: pode ser arte (normal) ou texto rasterizado (defeito). Olhar."
+    },
+    "tamanhos_distintos": {
+      "max": 1,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Documento com folhas de tamanhos diferentes: as vezes e encarte paisagem de proposito."
+    },
+    "ppi_efetivo_minimo": {
+      "min": null,
+      "severidade": "informa",
+      "procedencia": "mercado",
+      "porque": "Em tela, ppi so importa relativo ao zoom. Fundo de pagina (>=90% da folha) fica fora da conta.",
+      "por_destino": {
+        "impressao": {
+          "min": 300,
+          "severidade": "aviso",
+          "procedencia": "mercado",
+          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Sem ancora propria ainda."
+        },
+        "grafica": {
+          "min": 300,
+          "severidade": "reprova",
+          "procedencia": "mercado",
+          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Ancora: reclamacao da grafica de 21/08 (adesivo a ~30 dpi)."
+        }
+      }
+    },
+    "titulo_metadado": {
+      "igual": true,
+      "severidade": "informa",
+      "procedencia": "norma",
+      "porque": "PDF/UA (ISO 14289) exige dc:title; leitor de tela anuncia o titulo, nao o nome do arquivo."
+    }
+  },
+  "dom": {
+    "_variancia": "medida 08/10: 3 execucoes sobre o Caderno Pesquisa X (720 B) e a fixture folha-cortada (1223 B) deram JSON identico. Deterministico.",
+    "_nao_cobre": "fragmentacao de pagina (break-inside:avoid maior que a coluna some no PDF) -> checagem de cobertura HTML x PDF",
+    "texto_cortado": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Texto que um ancestral com overflow corta: o leitor nao ve e nada avisa. Ancora: 45 respostas sumidas no Pesquisa X."
+    },
+    "texto_truncado_intencional": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Reticencias/line-clamp pedidos no CSS: escolha, mas ainda esconde texto. Em documento de cliente, conferir."
+    },
+    "excesso_largura_px": {
+      "max": 1,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Documento mais largo que a folha: o Chrome REDUZ A ESCALA de tudo sem avisar (medido 08/10: 230mm -> letra 11pt sai menor)."
+    },
+    "sobreposicao_de_texto": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Blocos de texto se cobrindo >=30% da area do menor. Limite herdado do qa_layout do Pesquisa X (322 paginas, sem falso positivo)."
+    },
+    "fontes_com_erro": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "@font-face que nao carregou: o Chrome cai em outra fonte calado e a marca some."
+    },
+    "imagens_quebradas": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural"
+    },
+    "lixo_de_template": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "undefined, NaN, [object Object], {{token}} ou ${token} na tela = template que nao substituiu."
+    },
+    "erros_console": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural"
+    },
+    "falhas_de_rede": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Recurso que nao baixou (fonte do Google sem internet, imagem). Em documento, o PDF pode sair sem ele."
+    }
+  },
+  "cobertura": {
+    "_variancia": "deterministica por construcao (contagem sobre texto extraido); herda a do dom e a do pdf, ambas medidas zero.",
+    "_ancora": "08/10: 4 pares reais aprovados (Pesquisa X Vol. I 14.393 palavras + 3.259 numeros; proposta e fechamento Desbravando; entregavel Atas) = 100% e 0 numero faltando. Nenhum falso positivo.",
+    "palavras_faltando_no_pdf": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Palavra que o HTML mostra e o PDF nao tem: texto cortado, ou PDF de outra versao do HTML."
+    },
+    "numeros_faltando_no_pdf": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "ancora",
+      "porque": "Numero do HTML ausente no PDF = PDF DEFASADO (HTML corrigido, PDF velho). O pior erro da serie no documento gerado de dados."
+    }
   }
 }

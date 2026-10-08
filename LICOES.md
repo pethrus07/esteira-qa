@@ -96,3 +96,60 @@ caracteres cada). Causa: o HTML puxa as fontes do endpoint `css2` do Google
 Fonts, que entrega fonte variável. É a armadilha nº 2 da receita do PDF
 RYZE, que o Atas não aplicou. O dano é aviso, não reprovação (ver acima).
 O conserto é barato: congelar os pesos em TTF estático.
+
+---
+
+## DOM e cobertura (08/10)
+
+### A pergunta que tirou o nome de classe da régua
+
+O `qa_layout.js` do Pesquisa X procurava `.page`, `.main`, `.ft`, `.duasc`. Aqui a
+pergunta é **"existe texto que o leitor não consegue ver?"**: para cada nó
+de texto, a caixa real das linhas (`Range.getClientRects`) contra a área
+visível de todo ancestral que corta. Funciona em qualquer HTML.
+
+### Erros de INSTRUMENTO
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| largura da folha | **as 6 peças APROVADAS** com "excesso" de 174 a 646px | medi numa janela de 1440px; `emulateMedia('print')` não muda a largura, e todo `width:100%` ficou com 1440 | ler o `@page` e pôr a janela na largura da folha **antes** de medir qualquer coisa |
+| idem | enfeite "blob" de 968px acusado | peguei o elemento mais largo, inclusive o que um ancestral corta | `scrollWidth` do documento, que é o critério do próprio Chrome |
+| `@page` | "não medido" na fixture feita para isso | `rule.style.size` vem vazio no Chrome; e o valor sai `"a4"` minúsculo | `getPropertyValue('size')` + normalizar |
+| sobreposição | folha cortada contava o mesmo defeito 2× | os parágrafos cortados continuam no layout, por baixo do rodapé | excluir o bloco já contado como cortado |
+| lixo de template | `null` acusaria o guia de NoSQL | herdado de uma UI de jogo (Mesa de Arton) | `null` fora; `undefined`, `NaN`, `{{}}`, `${}` ficam |
+
+O primeiro é o princípio "medir na granularidade que o produto produz",
+violado pelo próprio instrumento. Texto que só se corta a 794px nunca
+apareceria medido a 1440px.
+
+### Hipótese que NÃO se sustentou
+
+A cobertura (HTML × PDF) nasceu para pegar "o que some na paginação":
+bloco com `break-inside:avoid` maior que a coluna, que no Pesquisa X "foi apagado
+inteiro". **Em 5 estruturas de documento corrido** (colunas, bloco solto,
+flex, inline-block, linha de tabela) **o Chrome 154 não apagou nada**: 70
+de 70 parágrafos no PDF. O caso do Pesquisa X acontece em folha de altura fixa, e
+esse o DOM já pega sozinho.
+
+O que **só** a cobertura pega é o **PDF defasado** (HTML corrigido, PDF
+velho), "o pior erro da série" no documento gerado de dados. Por isso ela
+passou a comparar **números**: o 57% que virou 58,4% não muda nenhuma
+palavra de 4 letras. Na fixture, 99,05% das palavras bateram, e **1 número**
+denunciou o par.
+
+### Calibração
+
+- DOM: 5 peças aprovadas (Pesquisa X Vol. I, Caderno, proposta e fechamento
+  Desbravando, entregável Atas) → zero achado. 9 fixtures, cada uma com a
+  assinatura conferida **no PDF que o Chrome imprime**, não no instrumento.
+- Cobertura: 4 pares aprovados → 100%, inclusive 14.393 palavras e 3.259
+  números do Pesquisa X Vol. I. **Zero falso positivo.**
+- Variância: DOM com 3 execuções idênticas (720 e 1223 bytes; conferi o
+  tamanho junto com o hash, por causa dos "três nadas iguais" do PDF).
+- A redução de escala por largura ficou provada por **segunda via**: a
+  folha de 230mm impressa sai com corpo de letra < 10,45pt no PDF.
+
+### Armadilha de ambiente, de novo
+
+Patch com regex via `sed` no Git Bash **não aplicou nada**, sem erro. É a
+mesma família do `node -e` que come contrabarra. Regex vai de Edit/Write.
