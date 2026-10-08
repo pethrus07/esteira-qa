@@ -75,6 +75,12 @@ timbre seguem julgamento humano. Diga isso quando passar.
 
 ## Ao estender (novo formato, nova checagem, nova marca)
 
+**Antes de tudo: ler o que já se sabe.** As fontes do Sinapse sobre o formato
+(`~/Projetos/sinapse/07-FONTES/`: `metodo-qa-por-medicao`, `instrumento-que-mente`,
+`revisao-por-medicao-playwright`, `pdf-branded-chrome-headless`…) e a pesquisa de mercado em
+`reports/Padrões de mercado para QA.md`. Em 08/10 paguei de novo três armadilhas da revisão web
+que já estavam escritas lá.
+
 Na ordem, sem pular:
 
 1. **Fixture de defeito gerada pelo mecanismo REAL** da produção (o
