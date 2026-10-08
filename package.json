@@ -1,0 +1,11 @@
+{
+  "name": "esteira-qa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Esteira de QA universal — instrumentos que REPROVAM peça quebrada antes de chegar a uma pessoa",
+  "dependencies": {
+    "playwright": "1.62.0",
+    "axe-core": "^4.10.0"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "_como_ler": [
+    "Cada limite declara PROCEDENCIA, e o boletim imprime ao lado do veredito:",
+    "  estrutural — defeito binario: existe ou nao existe (glifo perdido, texto fora da folha). Limite 0.",
+    "  norma      — numero de norma publicada (WCAG, EBU R128, ISO 19005). Cita a norma.",
+    "  mercado    — convencao amplamente usada SEM estudo de calibracao por tras (300 ppi). Vale ate ter ancora.",
+    "  ancora     — calibrado entre pecas com veredito humano. Cita as pecas.",
+    "  arbitrado  — ninguem mediu. O boletim marca com '?' para nao se passar por regua.",
+    "",
+    "Severidade: 'reprova' tira a peca da esteira; 'aviso' chega ao humano com o motivo; 'informa' so registra.",
+    "Projeto sobrescreve com um .qa.json na pasta da peca ou acima dela (mesma forma deste arquivo).",
+    "Limite por destino: chave 'por_destino' troca severidade/valor quando --destino bate."
+  ],
+  "pdf": {
+    "_variancia": "medida 08/10: 3 execucoes sobre o Pesquisa X Vol. I (79 p.) deram JSON byte a byte identico. Instrumento deterministico.",
+    "fontes_type3_defeituosas": {
+      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "porque": "Type3 sem /ToUnicode = texto nao pesquisavel; glifo em bitmap = serrilhado na impressao."
+    },
+    "chars_texto_em_type3": {
+      "max": 0, "severidade": "aviso", "procedencia": "estrutural",
+      "porque": "Type3 vetorial com /ToUnicode e pesquisavel e nitido (medido 08/10 nos PDFs do Atas), mas sem hinting em tela e fora de PDF/A-1. Causa tipica: fonte variavel do Google Fonts (css2). Conserto: congelar em TTF estatico (pdf-ryze)."
+    },
+    "fontes_nao_embutidas": {
+      "max": 0, "severidade": "reprova", "procedencia": "norma",
+      "porque": "ISO 19005 (PDF/A) exige toda fonte embutida; nao embutida e substituida pelo leitor e muda metrica."
+    },
+    "glifo_sem_mapeamento": {
+      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "porque": "Caractere sem glifo na fonte sai como .notdef (U+0000 no texto). Ancora: 56 bullets U+F0B7 sumidos no Pesquisa X."
+    },
+    "glifo_substituto_fffd": { "max": 0, "severidade": "reprova", "procedencia": "estrutural" },
+    "caracteres_uso_privado": {
+      "max": 0, "severidade": "aviso", "procedencia": "estrutural",
+      "porque": "Uso privado (U+E000-F8FF) quase sempre e simbolo colado do Word; aviso porque fonte de icone usa de proposito."
+    },
+    "texto_fora_da_pagina": { "max": 0, "severidade": "reprova", "procedencia": "estrutural" },
+    "paginas_sem_tinta": {
+      "max": 0, "severidade": "reprova", "procedencia": "estrutural",
+      "porque": "Folha sem nenhuma tinta = transbordo que empurrou pagina extra. Medido por tinta, nao por contagem de caracteres (os limites 120 e 40 dos scripts antigos eram arbitrados e reprovariam folha de abertura).",
+      "por_destino": { "grafica": { "severidade": "aviso", "porque": "verso em branco e legitimo em impressao frente e verso" } }
+    },
+    "paginas_com_tinta_sem_texto": {
+      "max": 0, "severidade": "informa", "procedencia": "estrutural",
+      "porque": "Pagina que e so imagem: pode ser arte (normal) ou texto rasterizado (defeito). Olhar."
+    },
+    "tamanhos_distintos": { "max": 1, "severidade": "aviso", "procedencia": "estrutural",
+      "porque": "Documento com folhas de tamanhos diferentes: as vezes e encarte paisagem de proposito." },
+    "ppi_efetivo_minimo": {
+      "min": null, "severidade": "informa", "procedencia": "mercado",
+      "porque": "Em tela, ppi so importa relativo ao zoom. Fundo de pagina (>=90% da folha) fica fora da conta.",
+      "por_destino": {
+        "impressao": { "min": 300, "severidade": "aviso", "procedencia": "mercado",
+          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Sem ancora propria ainda." },
+        "grafica": { "min": 300, "severidade": "reprova", "procedencia": "mercado",
+          "porque": "Convencao grafica: 2 x lineatura de 150 lpi. Ancora: reclamacao da grafica de 21/08 (adesivo a ~30 dpi)." }
+      }
+    },
+    "titulo_metadado": { "igual": true, "severidade": "informa", "procedencia": "norma",
+      "porque": "PDF/UA (ISO 14289) exige dc:title; leitor de tela anuncia o titulo, nao o nome do arquivo." }
+  }
+}
