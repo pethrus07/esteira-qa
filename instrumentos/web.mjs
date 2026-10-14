@@ -41,6 +41,40 @@ if (!url) sair({ instrumento: "web", ilegivel: "arquivo não existe" });
 const M = {}, X = {}, naoAplica = [];
 const browser = await chromium.launch();
 
+/* SESSÃO (QA_SESSAO=arquivo storageState): site atrás de modo manutenção
+   (Elementor "Em Breve") só mostra o conteúdo logado. Com sessão: a barra de
+   admin do WP sai antes da 1ª pintura (32 px de margem + alvos que o
+   visitante nunca vê) e TODA escrita no host é abortada — QA logado em
+   produção não grava nada. Desempenho logado não é o do visitante (cache de
+   página não serve logado): o boletim marca `sessao: true`. 09/10.
+   VEREDITO 09/10 — o instrumento mentiu duas vezes antes deste formato:
+   · o init script roda em TODO frame; em iframe o documentElement ainda é
+     null → 11 pageerror "appendChild of null" por página, todos MEUS
+     (controle: sem a injeção, 0). Só o frame principal, e espera o nó.
+   · escrita abortada vira requestfailed ERR_FAILED e contava como "falha
+     de rede" do site (era o beacon cdn-cgi/rum). Agora a escrita recebe 204
+     local: o servidor não recebe nada e a contagem de rede fica honesta. */
+const SESSAO = process.env.QA_SESSAO || null;
+const hostAlvo = /^https?:/.test(url) ? new URL(url).host : null;
+async function contexto(opcoes) {
+  const ctx = await browser.newContext({ ...opcoes, ...(SESSAO ? { storageState: SESSAO } : {}) });
+  if (SESSAO) {
+    await ctx.addInitScript(() => {
+      if (window.top !== window) return;
+      const por = () => {
+        const s = document.createElement("style");
+        s.textContent = "#wpadminbar{display:none!important}html{margin-top:0!important}";
+        document.documentElement.appendChild(s);
+      };
+      if (document.documentElement) por(); else document.addEventListener("readystatechange", por, { once: true });
+    });
+    await ctx.route("**/*", (r) => (["POST", "PUT", "PATCH", "DELETE"].includes(r.request().method())
+      && new URL(r.request().url()).host === hostAlvo ? r.fulfill({ status: 204, body: "" }) : r.continue()));
+  }
+  return ctx;
+}
+
+
 async function abrir(contexto) {
   const page = await contexto.newPage();
   const erros = [], rede = [], abortadas = [];
@@ -89,7 +123,7 @@ async function abrir(contexto) {
 }
 
 /* ── celular: rolagem horizontal, alvo de toque ───────────────────── */
-const cel = await browser.newContext({ ...devices["iPhone 13"] });
+const cel = await contexto({ ...devices["iPhone 13"] });
 const c = await abrir(cel);
 if (c.erro) { await browser.close(); sair({ instrumento: "web", arquivo: alvo, ilegivel: `não carregou: ${c.erro}` }); }
 // a lição do qa-visual: largura passada solta abre em 1280; conferir a real
@@ -131,7 +165,7 @@ await cel.close();
    — lista vazia numa página que empurra tudo 600 px; janela comum de 390
    mediu 0,711. Sem hasTouch, emitiu 0,904 marcado "após input" sem input.
    Medir CLS na emulação daria ZERO para toda página, com cara de medido. */
-const celCls = await browser.newContext({ viewport: { width: 390, height: 844 } });
+const celCls = await contexto({ viewport: { width: 390, height: 844 } });
 const cc = await abrir(celCls);
 M.cls_celular = cc.erro ? null : +cc.clsCarga.toFixed(3);
 await celCls.close();
@@ -140,7 +174,7 @@ await celCls.close();
 /* bypassCSP: o Instituto tem CSP estrita (script-src 'self') e bloqueou a
    injeção do axe — o instrumento caiu INTEIRO (08/10). Afrouxar a CSP só
    neste contexto de teste não muda o que os scripts da página fazem. */
-const pc = await browser.newContext({ viewport: { width: 1440, height: 900 }, bypassCSP: true });
+const pc = await contexto({ viewport: { width: 1440, height: 900 }, bypassCSP: true });
 const d = await abrir(pc);
 if (d.erro) { await browser.close(); sair({ instrumento: "web", arquivo: alvo, ilegivel: `não carregou: ${d.erro}` }); }
 M.status_http = d.status;
@@ -183,4 +217,4 @@ X.falhas_de_rede = d.rede.slice(0, 5);
 M.requisicoes_abortadas = d.abortadas.length;
 if (!/^https?:/.test(url)) naoAplica.push("lcp_ms"); // file:// não tem rede: LCP não representa nada
 await browser.close();
-sair({ instrumento: "web", arquivo: alvo, medidas: M, exemplos: X, nao_aplica: naoAplica });
+sair({ instrumento: "web", arquivo: alvo, ...(SESSAO ? { sessao: true } : {}), medidas: M, exemplos: X, nao_aplica: naoAplica });
