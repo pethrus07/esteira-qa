@@ -505,5 +505,68 @@
       "procedencia": "estrutural",
       "porque": "TypeScript NAO medido por este instrumento. Aviso e nao informa: um PASSOU com 71 arquivos .ts sem medir seria zero por falta de medicao (instituto-automacao, 08/10)."
     }
+  },
+  "sistema": {
+    "_como_ler": "Camadas na ordem da correcao: N0 impede o uso > N1 quebra tarefa ou vaza permissao > N2 confianca > N3 acessibilidade > N4 visual. Cada numero e a contagem de achados DISTINTOS (o mesmo defeito em 10 telas conta 1; as telas vao no relatorio).",
+    "_nao_cobre": "Nivel 1 e so leitura: o que so aparece depois de gravar (enviar e-mail, subir arquivo, criar evento) fica para o nivel 2, com escrita autorizada. Regra de negocio, teclado e leitor de tela seguem humanos.",
+    "n0_impede_uso": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Entrada fora do ar, login recusado, app do lancador que nao abre, tela inicial em erro ou em branco: o cliente nao usa."
+    },
+    "n1_quebra_tarefa": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Menu ou atalho que cai no inicio (4 atalhos do Painel em 07/10), erro de JavaScript, API 404/5xx, F5 que desloga, producao levando a ambiente de teste, perfil que entra onde nao devia."
+    },
+    "n2_confianca": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Texto que nao devia chegar ao cliente: marca antiga (Mettmail em 07/10), undefined/NaN, nota interna de QA. Nao impede o uso; mina a confianca."
+    },
+    "n3_acessibilidade": {
+      "max": 0,
+      "severidade": "reprova",
+      "procedencia": "norma",
+      "porque": "WCAG 2.x A/AA via axe-core, impacto critico e serio — mesma regua do instrumento web. Contagem por REGRA violada, nao por elemento."
+    },
+    "n4_visual": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Rola de lado no celular (390 px), imagem quebrada, texto cortado sem reticencias, erro no console."
+    },
+    "perguntas": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "Divergencia que pode ser de proposito (API 401/403 numa tela que abriu, link que leva a outra tela, app que nao aparece no lancador): vai como PERGUNTA ao time, nao como defeito."
+    },
+    "nao_medido": {
+      "max": 0,
+      "severidade": "aviso",
+      "procedencia": "estrutural",
+      "porque": "Tela ou conta que o instrumento nao conseguiu medir (troca de senha obrigatoria, trava de escrita no caminho, limite de telas). Zero medido e zero por falta de medicao nao saem iguais."
+    },
+    "telas_medidas": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural"
+    },
+    "contas_medidas": {
+      "min": 1,
+      "severidade": "reprova",
+      "procedencia": "estrutural",
+      "porque": "Nenhum perfil entrou = nada foi medido."
+    },
+    "escritas_bloqueadas": {
+      "max": null,
+      "severidade": "informa",
+      "procedencia": "estrutural",
+      "porque": "Pedidos de gravacao que a trava segurou (204 local). Tela que falhou com escrita bloqueada no mesmo intervalo vai para nao medido."
+    }
   }
 }

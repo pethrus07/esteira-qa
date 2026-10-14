@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 fixtures/dom/_pdf/
 fixtures/_tmp-cobertura/
+saidas/

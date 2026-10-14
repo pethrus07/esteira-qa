@@ -22,8 +22,19 @@ node ~/Projetos/esteira-qa/qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [
 # áudio/vídeo: --voz (NISQA) · --fala texto.txt · imagem: --tamanho-mm 150 · HTML como página: --web
 ```
 
-PDF, HTML, imagem, áudio, vídeo, planilha, página no ar (URL) e código
-(arquivo `.js` ou pasta de projeto) já têm instrumento.
+PDF, HTML, imagem, áudio, vídeo, planilha, página no ar (URL), código
+(arquivo `.js` ou pasta de projeto) e **sistema logado** já têm instrumento.
+
+- **Sistema logado** (`node qa.mjs sistemas/<produto>.json [--contas a,b]`):
+  QA nível 1 antes de liberar para cliente. Entra em cada perfil (senha do
+  1Password, nunca impressa — o Pedro aprova o pedido do app na tela),
+  percorre menu, atalhos e cada app do lançador, **só leitura** (trava de
+  escrita desde o primeiro carregamento), e escreve
+  `saidas/<produto>/<data>/relatorio.md` ordenado pelo dano: N0 impede o
+  uso → N1 quebra tarefa ou vaza permissão → N2 confiança → N3
+  acessibilidade → N4 visual; `?` é pergunta ao time, não defeito. Prints
+  podem ter dado real de cliente: `saidas/` não vai para o git. Nível 2
+  (enviar e-mail, subir arquivo) exige escrita — só com o OK do Pedro.
 
 - **Perfil** (`--perfil tutorial`, ou `"perfil"` no `.qa.json`): limite
   ancorado num **tipo** de peça. Os limites de tela morta vieram de

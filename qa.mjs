@@ -24,8 +24,8 @@ import { RAIZ, rodarPython } from "./nucleo/ambiente.mjs";
 import { comPerfil, julgar, veredito, reguaDoProjeto } from "./nucleo/regua.mjs";
 import { carregarMarca, listarMarcas, medirMarca } from "./nucleo/marca.mjs";
 
-function rodarNode(script, args) {
-  const r = spawnSync("node", [path.join(RAIZ, script), ...args], { encoding: "utf8", maxBuffer: 1 << 28, timeout: 600_000 });
+function rodarNode(script, args, { timeout = 600_000, stderr = "pipe" } = {}) {
+  const r = spawnSync("node", [path.join(RAIZ, script), ...args], { encoding: "utf8", maxBuffer: 1 << 28, timeout, stdio: ["ignore", "pipe", stderr] });
   try { return JSON.parse(r.stdout); }
   catch { return { erro: (r.stderr || "sem saída").trim().split("\n").slice(-1)[0] }; }
 }
@@ -68,6 +68,12 @@ const FORMATOS = {
     medir: (arq) => rodarPython("sistema", "instrumentos/planilha.py", [arq]),
     nao_cobre: "rótulo repetido nas abas de folhear, soma das parciais = total, afirmação da capa contra a fonte, olhar aba por aba",
   },
+  sistema: {
+    ext: [],  // um roteiro em sistemas/<produto>.json (contas do 1Password, entradas, termos)
+    // percorre perfis × telas × apps: até 40 min, com o progresso na tela
+    medir: (arq, o) => rodarNode("instrumentos/sistema.mjs", [arq, ...(o.contas ? ["--contas", o.contas] : [])], { timeout: 2_400_000, stderr: "inherit" }),
+    nao_cobre: "nível 1 é só leitura: o que aparece depois de gravar (enviar e-mail, subir arquivo, criar evento) é nível 2, com escrita autorizada; regra de negócio, teclado e leitor de tela seguem humanos. Relatório ordenado por dano em saidas/<produto>/<data>/relatorio.md",
+  },
   imagem: {
     ext: [".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".gif"],
     medir: (arq, o) => rodarPython("sistema", "instrumentos/imagem.py", [arq, ...(o.tamanhoMm ? ["--tamanho-mm", String(o.tamanhoMm)] : [])]),
@@ -87,6 +93,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (argv[i] === "--voz") opc.voz = true;
   else if (argv[i] === "--fala") opc.fala = argv[++i];
   else if (argv[i] === "--json") opc.json = true;
+  else if (argv[i] === "--contas") opc.contas = argv[++i];
   else if (argv[i].startsWith("--")) { console.error(`opção desconhecida: ${argv[i]}`); process.exit(2); }
   else pecas.push(argv[i]);
 }
@@ -112,7 +119,9 @@ for (const peca of pecas) {
   const ehUrl = /^https?:\/\//.test(peca);
   const ext = ehUrl ? "" : path.extname(peca).toLowerCase();
   const ehPasta = !ehUrl && fs.existsSync(peca) && fs.statSync(peca).isDirectory();
-  const nome = ehUrl || (opc.web && /\.html?$/i.test(peca)) ? "web" : ehPasta ? "codigo"
+  // roteiro de sistema: um .json com "contas" (sistemas/suite-x.json)
+  const ehSistema = ext === ".json" && fs.existsSync(peca) && (() => { try { return !!JSON.parse(fs.readFileSync(peca, "utf8")).contas; } catch { return false; } })();
+  const nome = ehSistema ? "sistema" : ehUrl || (opc.web && /\.html?$/i.test(peca)) ? "web" : ehPasta ? "codigo"
     : Object.keys(FORMATOS).find((k) => FORMATOS[k].ext.includes(ext));
   const b = { peca, formato: nome || null, destino: opc.destino, checagens: [], erros: [] };
   if (peca.startsWith("par:")) {
@@ -151,6 +160,7 @@ for (const peca of pecas) {
     else if (r.ilegivel) b.ilegivel = r.ilegivel;
     else {
       b.medidas = r.medidas; b.exemplos = r.exemplos;
+      if (r.saida) b.relatorio = path.join(r.saida, "relatorio.md");
       b.checagens = julgar(nome, r.medidas, { destino: opc.destino, projeto: proj?.regua, naoAplica: r.nao_aplica || [] });
       if (marca && !marca.erro) {
         b.marca = marca.nome;
@@ -192,6 +202,7 @@ if (opc.json) {
     console.log("  " + "─".repeat(66));
     console.log(`  ${b.veredito}`);
     if (b.nao_cobre && !b.ilegivel) console.log(`  não cobre: ${b.nao_cobre}`);
+    if (b.relatorio) console.log(`  relatório por camada: ${b.relatorio}`);
     for (const q of b.a_confirmar || []) console.log(`  ? marca ${b.marca}, a confirmar: ${q}`);
   }
   console.log("\n  A esteira reprova o que está quebrado. Gosto, tom e adequação seguem humanos.\n");

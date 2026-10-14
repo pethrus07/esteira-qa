@@ -5,6 +5,7 @@ está quebrado. Gosto, tom e adequação continuam sendo julgamento humano.
 
 ```bash
 node qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
+# sistema logado (perfis × telas × apps, só leitura): node qa.mjs sistemas/suite-x.json [--contas qa-usuario,qa-dominio]
 # áudio/vídeo: --voz (NISQA) · --fala texto.txt (transcrição reversa) · imagem: --tamanho-mm 150
 npm test        # prova que cada instrumento enxerga o que diz enxergar
 ```
@@ -26,6 +27,7 @@ a medição de cada lição, em [`LICOES.md`](LICOES.md).
 | áudio e vídeo | `.mp4 .webm .wav .mp3 .m4a` | `instrumentos/midia.mjs` | ✓ 11 casos · **equivalente ao protótipo** · `--perfil tutorial` |
 | planilha | `.xlsx` | `instrumentos/planilha.py` | ✓ 10 casos (o `#DIV/0!` em cache vem do próprio Excel) · Corpus Pesquisa X |
 | web | URL, ou `--web` num HTML | `instrumentos/web.mjs` | ✓ 6 casos · variância do LCP medida · 2 sites no ar |
+| sistema logado | `sistemas/<produto>.json` | `instrumentos/sistema.mjs` | ✓ fixture com 1 defeito por camada + versão boa · mutação da trava · relatório N0→N4 |
 | código | `.js .mjs` ou uma pasta | `instrumentos/codigo.mjs` | ✓ 7 casos · TypeScript ainda **não medido** (aparece como aviso) |
 
 Formato sem instrumento sai **INCOMPLETO**, nunca "passou".

@@ -325,6 +325,10 @@ de toque 4, **com três limites (24, 44, 56)**. Ficou a norma: WCAG 2.2 SC
 | alvo de toque | o Instituto com 1 alvo < 24 px | era o *skip link* "Pular para o conteúdo" (1×1 até ganhar foco), que é **boa prática** | excluir elemento oculto para leitor de tela, como o DOM já fazia |
 | falhas de rede | 9 no site do Desbravando | telemetria da Wix abortada pelo próprio navegador (`ERR_ABORTED`) | filtrar pela natureza do erro, não por lista de domínios |
 
+| sessão: pageerror | **11 "appendChild of null" por página** no site da um site da frota (09/10) | a injeção do CSS que esconde a barra de admin rodava em todo frame, inclusive iframe com `documentElement` ainda null. Controle: mesma página sem a injeção = **0** | só o frame principal, esperando o nó; controle repetido = 0 com e sem |
+| sessão: axe | `aria-required-children` e `listitem` na home e no contato | com a injeção quebrada, a **barra de admin ficou visível** e o axe mediu ela. Corrigido: contato 2→1 crítico, 8→4 sério | o mesmo conserto; medida contaminada guardada em `out-site-z/esteira/` como registro |
+| sessão: rede | `ERR_FAILED cdn-cgi/rum` como falha do site | a **minha trava** de escrita abortava o beacon da Cloudflare | escrita bloqueada recebe 204 local: o servidor não recebe nada e a rede fica honesta |
+
 A hipótese errada fica registrada de propósito: **medir antes de mexer**
 teria evitado a volta. Mudei, medi igual, e só então fiz a conta que
 mostrou que o número estava certo.
@@ -382,3 +386,108 @@ A chave de formato real usada no teste nasce numa pasta temporária e nunca
 esteira-qa, atas, eventos-desbravando-utv e instituto-automacao: 0 erro
 de sintaxe, 0 variável não declarada, 0 credencial com prefixo conhecido.
 **Não cobre** token sem prefixo fixo (o do Cloudflare, por exemplo).
+
+---
+
+## Sistema logado (12/10)
+
+Pedido do Pedro antes de liberar o Suíte X para cliente: QA nível 1,
+ponta a ponta, **do que impede o uso até o visual**. O `web` mede uma
+página; aqui a unidade é **perfil × tela × app**, e o boletim sai ordenado
+pela ordem em que o time corrige (N0 impede o uso → N1 quebra tarefa ou
+vaza permissão → N2 confiança → N3 acessibilidade → N4 visual; `?` =
+pergunta, divergência que pode ser de propósito).
+
+### Herdado, não reaprendido
+
+| de onde | o que virou regra aqui |
+|---|---|
+| mapa do Suíte X (07/10) | a trava abortou o PROPFIND e o Drive mostrou "Failed to fetch" que **não era do produto** → PROPFIND/REPORT/SEARCH passam (leitura de WebDAV); tela que falha **com** escrita segurada no mesmo intervalo vai para "não medido" |
+| `web` (09/10) | escrita segurada recebe **204 local**, não `abort` — senão vira "falha de rede" do produto |
+| Site Z (09/10) | GET em link de admin executa ação → nunca visitar sair/excluir/desativar nem URL com token/nonce/action |
+| qa-empresa (08/10) | o `op` espera em vez de falhar → `timeout` e TODAS as credenciais buscadas antes de abrir o navegador |
+| mapa do Suíte X (07/10) | "atalho volta para o Painel" é o defeito mais comum → link que cai na tela inicial é N1; cair em subtela do alvo (`/security` → `/security/two-factor`) é redirecionamento legítimo |
+
+### Erro de INSTRUMENTO pego pela fixture
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| trava ligada tarde | o POST que a tela inicial dispara ao abrir **chegou ao servidor** da fixture | eu ligava a trava depois de o login voltar; a primeira tela já tinha carregado | trava desde o primeiro carregamento, com autenticação liberada; se ela segurar o próprio login, sai "não medido", nunca "login recusado" |
+
+Mutação: com `ESCRITA = []` o teste reprova nas duas linhas da trava.
+
+### Fixture
+
+`fixtures/sistema/servidor.mjs`: um produto local com login e um defeito
+por camada (302 para o início, erro de JS, API 500, "Mettmail", 900 px a
+390, POST no carregamento, link Sair) e a versão boa das mesmas telas.
+O produto bom sai com zero achado, axe incluído.
+
+### Piloto
+
+Sem ninguém aprovando o 1Password, a conta saiu **"não medido: a conta
+inteira"** — e não "passou com 0 achados". É o comportamento certo.
+
+### Primeira rodada real (Suíte X produção, 12/10) — o instrumento mentiu 4 vezes
+
+Conferido **olhando os prints** antes de reportar. Cada caso virou fixture.
+
+| o que | sintoma | causa | conserto |
+|---|---|---|---|
+| "perfil entra onde não devia" | usuário comum "abriu" `admin.suite-x.example` → N1 de vazamento | o host do painel é também o app **Conta** do usuário (Minha conta, Armazenamento) — print 039 | `deve_negar` exige `marcas` (o que só o admin vê). "Aliases" não serve: o usuário vê "Aliases que recebo" |
+| texto cortado | 26 achados no Drive/Chat | 25 eram texto **só para leitor de tela** (`.hidden-visually`: 1×1 com clip) — boa prática | elemento ≤ 2 px, com `clip`/`clip-path`, ou absoluto de ≤ 16 px² fica fora |
+| API 404 | 11 "N1" iguais, um por host | o `user_status` do Nextcloud dá 404 em todo app e as telas funcionam | 404 numa tela que abriu vira **pergunta**; com a tela em erro, N1. Host sai do texto para agrupar |
+| CSS que vem como HTML | o Tarefas vazio aparecia só como "erro no console" (N4) | só `document/xhr/fetch` eram medidos | CSS/JS do app com status ≥ 400 ou `text/html` = N1 "arquivo do app não carregou" |
+| console | toda resposta 404 contada duas vezes | o navegador ecoa no console ("Failed to load resource") | eco de rede fora do console |
+
+E dois erros de **operação**, não de medida:
+- em série, os 3 perfis passaram dos 40 min do `qa.mjs`; o processo morreu no 2º perfil e
+  **o relatório só era gravado no fim** — ~200 telas perdidas. Agora: perfis em paralelo,
+  relatório gravado a cada conta, limite de 2 h;
+- cada app do Nextcloud repetia as ~10 telas de Configurações: caminho já medido em outro
+  app da mesma conta não é medido de novo.
+| comando como link | o percurso **clicou "Salvar como rascunho"** no webmail (print 022, qa-dominio) | o filtro só conhecia sair/excluir; no Roundcube comando é `<a href="#">` com JavaScript | `COMANDO` (salvar, enviar, encaminhar, aplicar, criar…) e link `#`/`javascript:` ficam de fora. A trava segurou o POST e **nada foi salvo** (formulário vazio, servidor não recebeu) — mas trava é rede, não filtro |
+
+**O teste que não testava, de novo:** a mutação do `COMANDO` passou no primeiro teste, porque o
+servidor da fixture registrava só o caminho, sem a query — o clique em `?_action=send` era
+invisível. Registro com a query; a mutação agora reprova.
+| CSS do Tarefas, de novo em N4 | na rodada oficial (133 telas) o CSS que vem como HTML saiu como "erro no console" nos 3 perfis | a checagem pela resposta de rede pega a fixture e **não disparou em produção** (causa não isolada) | o veredito do próprio navegador ("Refused to apply style … MIME type") vira N1; reconhece as 4 recusas reais da rodada |
+| espera do 1Password | o laço de espera girou 126× em segundos | `op whoami` responde "not signed in" em 0,4 s **sem** disparar o pedido do app | `op vault list` (dispara o pedido e espera) + pausa de 10 s entre tentativas; o `op` desiste sozinho em ~60 s, não no timeout que eu passo |
+
+**Rodada oficial (12/10, 22:19):** 133 telas, 3 perfis, 0 N0 · 2 N1 (JS no Drive e no Chat) +
+o CSS do Tarefas reclassificado à mão para N1 com a regra acima · 2 N2 (Mettmail) · 14 regras
+WCAG · 210 escritas seguradas (heartbeat e contactsmenu do Nextcloud), nenhuma tela falhou por
+causa delas. Prints em `saidas/` (fora do git: o super admin vê dado de cliente).
+
+## Nível 2 (13/10) — o que o nível 1 não podia ver
+
+O nível 1 (133 telas, 0 N0) e o nível 2 discordaram: o nível 2 achou **dois N0** —
+**pasta do Drive não abre por clique** e **Meet não inicia reunião**. O percurso do nível 1
+segue links de menu e nunca clica em LINHA de lista nem em botão de AÇÃO; "o app abre" não é
+"o app serve". Regra: nível 1 sem nível 2 não libera produto para cliente.
+
+Erros meus de operação nesta rodada (nenhum deixou resíduo — varredura final zerada):
+filtro por regex largo clicou o vizinho três vezes ("Criar sala no Talk" antes de "Salvar";
+"Excluir contato do Calendário de Aniversários" antes de "Excluir"; o compartilhar da PASTA no
+lugar do salvar). **Botão de ação é sempre pelo nome EXATO.** E toda falha "do produto" foi
+repetida na segunda conta antes de virar achado.
+
+## Reteste no Chrome real (13/10, rodada 3) — o que mudou nas afirmações
+
+Retestado com o **Chrome instalado, com janela** (`ferramentas/sessao.mjs --chrome`), contexto
+limpo, medida objetiva onde dava. Três afirmações caíram, uma foi corrigida:
+
+| afirmação | reteste | veredito |
+|---|---|---|
+| "erro de JS no Drive (`unshift`) e no Chat (`data`)" — N1 | Chrome real: **0 pageerror** no Drive (3 telas) e no Chat | **retirada**: artefato do Chromium headless |
+| "servidor com relógio adiantado" ("em 10 segundos") | Google, Cloudflare e time.is também +44 s | **retirada**: o relógio DESTA máquina está 44 s atrasado (`w32time` parado) |
+| "Meet falha sem mensagem na tela" | aparece "A ação não pode ser concluída. Tente novamente." | **corrigida**: há mensagem (genérica, manda repetir o que nunca funciona) |
+| "webmail mostra hora errada" | `Date: … 13:52:49 +0000` = `Received … 10:52:49 -0300` | **refinada**: o instante está certo; só a EXIBIÇÃO do Roundcube está em UTC |
+
+Lição de instrumento: **todo achado de JS/visual tirado no headless precisa de reteste no
+Chrome real** antes de ir para o time. E **todo "o servidor está X" precisa de referência
+externa** — o relógio da máquina de teste também é um instrumento, e mentiu 44 s.
+
+Lição de mobile: o nível 1 media rolagem só no `<html>`; no Nextcloud quem transborda é o
+`<body>` (464–488 px a 390) e o avatar (onde mora o "Sair") fica fora da tela. Corrigido:
+`max(html, body)` + "botão fora da tela"; fixture + mutação.
