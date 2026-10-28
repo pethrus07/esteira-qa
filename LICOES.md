@@ -491,3 +491,21 @@ externa** — o relógio da máquina de teste também é um instrumento, e menti
 Lição de mobile: o nível 1 media rolagem só no `<html>`; no Nextcloud quem transborda é o
 `<body>` (464–488 px a 390) e o avatar (onde mora o "Sair") fica fora da tela. Corrigido:
 `max(html, body)` + "botão fora da tela"; fixture + mutação.
+
+## Reteste de 15/10 e o card do suporte — a conta de QA mascarou o idioma
+
+O card do suporte (analista, 14/10, conta REAL de cliente) mostrava Agenda, Contatos, Tarefas, Forms,
+News, Notas, Maps e Chat em **inglês misturado com português de Portugal** ("contactos",
+"Guardar", "Partilha", "Event title", "Add a location"). Nenhuma rodada nossa viu isso: as
+contas QA têm `language = pt_BR` **gravado no perfil do Nextcloud** (medido pela API
+`/ocs/v2.php/cloud/user`), e navegador em `en-US` ou `pt-PT` não muda nada para elas. A mistura do
+cliente é a assinatura da tradução pt-PT do Nextcloud (incompleta → cai no inglês).
+
+Regra nova: **conta de teste não pode ter preferência que o cliente real não tem**. Antes de
+julgar idioma, fuso, tema ou qualquer coisa "por usuário", ler o perfil da conta QA e o de um
+cliente típico; se divergirem, o achado vira "não verificável com esta conta", nunca "passou".
+
+Outros dois do reteste: o "Sair" do Meet só foi exercitado na 2ª tentativa (o avatar do Meet é
+um LINK "Conta" que abre menu; o primeiro passo não clicou nada e voltou "tudo logado", o que
+pareceria defeito); e o e-mail de convite existia, com assunto "Convite atualizado:" — a busca
+pelo assunto exato "Convite:" deu falso negativo. **Busca por assunto vai por trecho estável.**
