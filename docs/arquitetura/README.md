@@ -11,7 +11,17 @@ cada uma numa notação padrão:
 
 Um comando que mede qualquer peça (PDF, HTML, imagem, áudio, vídeo, planilha, página no ar, código, sistema logado) e reprova o que está quebrado, com régua universal, da marca e do projeto. Ela reprova, não aprova: gosto e tom ficam com o Pedro.
 
-![Esteira de QA · mede antes de entregar](./esteira-qa.svg)
+### Quem usa e para quê (UML)
+
+![Casos de uso · Esteira de QA · mede antes de entregar](./esteira-qa-1-casos-de-uso.svg)
+
+### Da peça pronta ao veredito (BPMN 2.0)
+
+![Processo · Esteira de QA · mede antes de entregar](./esteira-qa-2-processo.svg)
+
+### Arquitetura (C4, containers)
+
+![Arquitetura · Esteira de QA · mede antes de entregar](./esteira-qa-3-arquitetura.svg)
 
 Editável: [`esteira-qa.excalidraw`](./esteira-qa.excalidraw), abre em [excalidraw.com](https://excalidraw.com) ou no VS Code com a extensão Excalidraw.
 
