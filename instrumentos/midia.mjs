@@ -26,7 +26,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { RAIZ, PY } from "../nucleo/ambiente.mjs";
+import { RAIZ, PY, QA_EMPRESA } from "../nucleo/ambiente.mjs";
 
 const FFMPEG = "ffmpeg", FFPROBE = "ffprobe";
 const ff = (args) => spawnSync(FFMPEG, ["-hide_banner", "-nostats", ...args], { encoding: "utf8", maxBuffer: 1 << 28 }).stderr || "";
@@ -112,12 +112,12 @@ if (as) {
 } else naoAplica.push("lufs", "pico_real_dbtp", "amostras_no_pico", "silencio_inicial_s", "silencio_final_s");
 
 /* ── camadas caras, por opção ──────────────────────────────────── */
-const PROTO = path.join(RAIZ, "..", "qa-empresa", "tutoriais", "esteira");
+const PROTO = path.join(QA_EMPRESA, "tutoriais", "esteira");
 if (comVoz && as) {
   // NISQA: venv própria (fixa torch 2.2.1 — nunca instalar em outra) e
   // pesos no qa-empresa. Teto não documentado ~12s: o script fatia em 10s.
   const r = spawnSync(PY.nisqa, [path.join(PROTO, "medir-nisqa.py"), path.resolve(alvo), "--json"],
-    { encoding: "utf8", cwd: path.join(RAIZ, "..", "qa-empresa"), maxBuffer: 1 << 26, env: { ...process.env, PYTHONIOENCODING: "utf-8" } });
+    { encoding: "utf8", cwd: QA_EMPRESA, maxBuffer: 1 << 26, env: { ...process.env, PYTHONIOENCODING: "utf-8" } });
   try {
     const v = JSON.parse(r.stdout.slice(r.stdout.indexOf("[")))[0];
     Object.assign(M, { voz_mos: v.mos, voz_naturalidade: v.naturalidade_tts, voz_coloracao: v.coloracao,

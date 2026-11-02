@@ -44,7 +44,9 @@ PDF, HTML, imagem, áudio, vídeo, planilha, página no ar (URL), código
   **par** (cobertura). Só o par pega o PDF defasado, com o HTML corrigido e
   o PDF velho, que foi "o pior erro da série".
 - **Marca:** `--marca` ou `.qa.json` na pasta do projeto: `{"marca": "ryze"}`.
-  Marcas em `regua/marcas/`. O que a marca não documenta sai como
+  Marcas em `regua/marcas/` e, as que têm nome real de cliente, em
+  `regua/marcas/local/` (fora do git; vence a versionada de mesmo nome).
+  O que a marca não documenta sai como
   `? a confirmar`; leve ao Pedro como pergunta, não invente.
 - Saída: `0` passou · `1` reprovado/ilegível · `3` incompleto.
 

@@ -6,3 +6,6 @@ fixtures/dom/_pdf/
 fixtures/_tmp-cobertura/
 saidas/
 decisoes/
+# Configuração da máquina e marcas com nome real de cliente: só local
+ambiente.local.json
+regua/marcas/local/

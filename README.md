@@ -57,6 +57,11 @@ The logged-in mode enters real production systems with credentials taken from 1P
 
 `nucleo/ambiente.mjs` points to executables on the author's Windows machine. On another machine, adjust those paths first.
 
+Local files, kept out of git:
+
+- `regua/marcas/local/<brand>.json`: brands that carry a real client name. The loader reads this folder first, so a local file wins over a versioned one with the same name. In the public repository the company brand appears as `empresa-a`.
+- `ambiente.local.json`: `{"qaEmpresa": "<path>"}`, the folder of the company QA repository (video pipeline prototype and NISQA weights). The `ESTEIRA_QA_EMPRESA` environment variable wins over the file. Without either, the sibling folder `qa-empresa` is used. If it does not exist, the prototype equivalence test is skipped.
+
 ## Tests
 
 ```

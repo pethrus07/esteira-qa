@@ -28,6 +28,19 @@ export const PY = {
 };
 export const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
+/* Configuração da máquina, fora do git: `ambiente.local.json` na raiz
+   (ignorado). Hoje só guarda onde fica o repositório de QA da empresa
+   (protótipo da esteira de vídeo e pesos do NISQA). A variável de
+   ambiente ESTEIRA_QA_EMPRESA vence o arquivo; sem nenhum dos dois, vale
+   a pasta irmã `qa-empresa`. */
+const LOCAL = (() => {
+  const f = path.join(RAIZ, "ambiente.local.json");
+  try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, "utf8")) : {}; }
+  catch { return {}; }
+})();
+export const QA_EMPRESA = path.resolve(RAIZ,
+  process.env.ESTEIRA_QA_EMPRESA || LOCAL.qaEmpresa || path.join("..", "qa-empresa"));
+
 /** Imprime HTML em PDF pelo MESMO caminho da produção (RYZE/Atas):
     chrome.exe --print-to-pdf. O page.pdf do Playwright não reproduziu
     defeitos que este reproduz (LICOES, PDF). Caminho de saída absoluto:

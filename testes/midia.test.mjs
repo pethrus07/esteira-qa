@@ -11,7 +11,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
-import { RAIZ } from "../nucleo/ambiente.mjs";
+import { RAIZ, QA_EMPRESA } from "../nucleo/ambiente.mjs";
 
 const DIR = path.join(RAIZ, "fixtures", "midia");
 if (!fs.existsSync(path.join(DIR, "video-bom.mp4"))) spawnSync("node", [path.join(RAIZ, "fixtures", "gerar-midia.mjs")], { stdio: "ignore" });
@@ -50,7 +50,7 @@ for (const c of CASOS) {
 }
 
 /* ── equivalência com o protótipo ───────────────────────────────── */
-const PROTO = path.join(RAIZ, "..", "qa-empresa");
+const PROTO = QA_EMPRESA;
 if (fs.existsSync(path.join(PROTO, "tutoriais", "esteira", "medir.mjs"))) {
   for (const arq of ["video-cauda-congelada.mp4", "video-bom.mp4"]) {
     const p = spawnSync("node", ["tutoriais/esteira/medir.mjs", path.join(DIR, arq), "--json"], { cwd: PROTO, encoding: "utf8" });

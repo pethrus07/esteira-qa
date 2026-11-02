@@ -16,15 +16,21 @@ import path from "node:path";
 import { RAIZ } from "./ambiente.mjs";
 import { croma, cssParaRgba, hexParaRgb, maisProxima } from "./cor.mjs";
 
+/* Marcas que não podem ir a público (cliente com nome real) ficam em
+   regua/marcas/local/, fora do git. Ela vence a pasta versionada quando
+   os dois arquivos têm o mesmo nome. */
+const PASTAS_MARCA = [path.join(RAIZ, "regua", "marcas", "local"), path.join(RAIZ, "regua", "marcas")];
+
 export function carregarMarca(nome) {
   if (!nome) return null;
-  const f = path.join(RAIZ, "regua", "marcas", `${String(nome).toLowerCase()}.json`);
-  if (!fs.existsSync(f)) return { erro: `marca "${nome}" sem arquivo em regua/marcas/` };
+  const arq = `${String(nome).toLowerCase()}.json`;
+  const f = PASTAS_MARCA.map((d) => path.join(d, arq)).find((c) => fs.existsSync(c));
+  if (!f) return { erro: `marca "${nome}" sem arquivo em regua/marcas/` };
   return JSON.parse(fs.readFileSync(f, "utf8"));
 }
 
-export const listarMarcas = () =>
-  fs.readdirSync(path.join(RAIZ, "regua", "marcas")).filter((f) => f.endsWith(".json")).map((f) => f.replace(".json", ""));
+export const listarMarcas = () => [...new Set(PASTAS_MARCA.filter((d) => fs.existsSync(d))
+  .flatMap((d) => fs.readdirSync(d).filter((f) => f.endsWith(".json")).map((f) => f.replace(".json", ""))))];
 
 const norm = (s) => String(s).replace(/[\s_-]/g, "").toLowerCase();
 const daMarca = (familia, fontes) => fontes.some((f) => norm(familia).startsWith(norm(f)));

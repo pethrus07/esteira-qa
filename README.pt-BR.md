@@ -57,6 +57,11 @@ O modo de sistema logado entra em sistema real de produção com credencial do 1
 
 `nucleo/ambiente.mjs` aponta para executáveis na máquina Windows do autor. Em outra máquina, ajuste esses caminhos antes.
 
+Arquivos locais, fora do git:
+
+- `regua/marcas/local/<marca>.json`: marcas com nome real de cliente. O carregador lê essa pasta primeiro, então o arquivo local vence o versionado de mesmo nome. No repositório público a marca da empresa aparece como `empresa-a`.
+- `ambiente.local.json`: `{"qaEmpresa": "<caminho>"}`, a pasta do repositório de QA da empresa (protótipo da esteira de vídeo e pesos do NISQA). A variável de ambiente `ESTEIRA_QA_EMPRESA` vence o arquivo. Sem nenhum dos dois, vale a pasta irmã `qa-empresa`. Se ela não existir, o teste de equivalência com o protótipo é pulado.
+
 ## Testes
 
 ```
