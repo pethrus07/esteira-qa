@@ -13,7 +13,7 @@ Comandos conferidos em `package.json` e `README.md`:
 npm test                      # = node testes/todos.mjs — roda todas as testes/*.test.mjs
 npm run qa -- <peça>          # = node qa.mjs
 node qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
-node qa.mjs sistemas/<produto>.json [--contas a,b]     # sistema logado (só leitura)
+node qa.mjs <perfil-do-sistema>.json [--contas a,b]  # sistema logado (só leitura); perfis de cliente moram no repo do projeto
 # mídia: --voz (NISQA) · --fala texto.txt · imagem: --tamanho-mm 150 · HTML como página: --web
 ```
 
@@ -23,7 +23,7 @@ node qa.mjs sistemas/<produto>.json [--contas a,b]     # sistema logado (só lei
   `fixtures/marca/*.html` (rastreados) — conferir `git status` depois.
 - Fixtures se regeneram pelos geradores em `fixtures/gerar-*.mjs|py`.
 - Não há CI. Instrumento só entra no `qa.mjs` depois de passar no `npm test`.
-- `node qa.mjs sistemas/*.json` e `ferramentas/sessao.mjs` **entram em produção logados**
+- `node qa.mjs <perfil>.json` e `ferramentas/sessao.mjs` **entram em produção logados**
   (senha do 1Password, o Pedro aprova o pedido do app na tela). Só rodar com pedido
   explícito do Pedro. `ferramentas/sessao.mjs` **não tem trava de escrita** (é a
   ferramenta do nível 2): cada passo é escrito à mão e lido antes de mandar.
@@ -38,7 +38,7 @@ node qa.mjs sistemas/<produto>.json [--contas a,b]     # sistema logado (só lei
 - `regua/padrao.json` → `regua/marcas/*.json` → `regua/perfis/*.json` → `.qa.json` do projeto.
 - `reports/Padrões de mercado para QA.md` + `research_notes/` — régua comparada com normas.
 - `decisoes/regua-decisoes-2026-10-08.docx` — decisões e parâmetros da régua a decidir.
-- `sistemas/suite-x-n2/LEIA.md` — passos do nível 2 do Suíte X.
+- Perfis de sistema logado de cliente (contas e telas) e os passos do nível 2 do Suíte X moram no repositório do projeto (`qa-empresa/suite-x-n2/`) desde 01/11/2026. Aqui fica só a fixture (`fixtures/sistema/`).
 
 ## Relação com a skill `qa`
 

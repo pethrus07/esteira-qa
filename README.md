@@ -1,58 +1,97 @@
 # esteira-qa
 
-Mede qualquer peça antes de ela chegar a uma pessoa, e **reprova** o que
-está quebrado. Gosto, tom e adequação continuam sendo julgamento humano.
+[Português](README.pt-BR.md)
 
-```bash
-node qa.mjs <peça|pasta|url> [outra ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
-# sistema logado (perfis × telas × apps, só leitura): node qa.mjs sistemas/suite-x.json [--contas qa-usuario,qa-dominio]
-# áudio/vídeo: --voz (NISQA) · --fala texto.txt (transcrição reversa) · imagem: --tamanho-mm 150
-npm test        # prova que cada instrumento enxerga o que diz enxergar
-```
+A universal QA pipeline. It measures any piece of work before it reaches a person (PDF, HTML document, image, audio, video, spreadsheet, web page, code, logged-in system) and fails what is broken. It fails; it does not approve. Taste, tone and fit for the client stay a human judgment.
 
-Nasceu de uma nota 8,5 dada a vídeos que nunca foram assistidos e de 35
-scripts de QA reescritos do zero em 10 projetos. O método está em
-[`claude/skills/qa/SKILL.md`](claude/skills/qa/SKILL.md); o que custou caro, com
-a medição de cada lição, em [`LICOES.md`](LICOES.md).
+## Status
 
-## Formatos
+Active (2026-11). Private repository (`github.com/pethrus07/esteira-qa`). Used daily as the `qa` skill of Claude Code.
 
-| formato | entrada | instrumento | estado |
+## The problem
+
+It was born from a score of 8.5 given to videos nobody had watched, and from 35 QA scripts rewritten from scratch in 10 projects. Each project measured differently, and some "approvals" were opinions. Here every format has one instrument, every limit says where it comes from, and a format without an instrument comes out as INCOMPLETE, never as "passed".
+
+## Formats
+
+| Format | Input | Instrument | State |
 |---|---|---|---|
-| PDF | `.pdf` | `instrumentos/pdf.py` | ✓ 8 fixtures · variância 0 · 10 PDFs reais |
-| documento HTML | `.html` (com `@page`) | `instrumentos/dom.mjs` | ✓ 11 fixtures · variância 0 · 8 peças aprovadas |
-| par HTML × PDF | os dois juntos | `instrumentos/cobertura.py` | ✓ 4 casos · 0 falso positivo em 4 pares reais |
-| marca | `--marca` / `.qa.json` | `nucleo/marca.mjs` + `regua/marcas/` | ✓ RYZE, Desbravando · parcial: Empresa A, Celiware |
-| imagem / arte | `.png .jpg .webp .tif` | `instrumentos/imagem.py` | ✓ 10 casos · JPEG validado contra verdade conhecida · 13 publicadas |
-| áudio e vídeo | `.mp4 .webm .wav .mp3 .m4a` | `instrumentos/midia.mjs` | ✓ 11 casos · **equivalente ao protótipo** · `--perfil tutorial` |
-| planilha | `.xlsx` | `instrumentos/planilha.py` | ✓ 10 casos (o `#DIV/0!` em cache vem do próprio Excel) · Corpus Pesquisa X |
-| web | URL, ou `--web` num HTML | `instrumentos/web.mjs` | ✓ 6 casos · variância do LCP medida · 2 sites no ar |
-| sistema logado | `sistemas/<produto>.json` | `instrumentos/sistema.mjs` | ✓ fixture com 1 defeito por camada + versão boa · mutação da trava · relatório N0→N4 |
-| código | `.js .mjs` ou uma pasta | `instrumentos/codigo.mjs` | ✓ 7 casos · TypeScript ainda **não medido** (aparece como aviso) |
+| PDF | `.pdf` | `instrumentos/pdf.py` | 8 fixtures, zero variance, 10 real PDFs |
+| HTML document | `.html` (with `@page`) | `instrumentos/dom.mjs` | 11 fixtures, zero variance, 8 approved pieces |
+| HTML × PDF pair | both together | `instrumentos/cobertura.py` | 4 cases, 0 false positives on 4 real pairs |
+| Brand | `--marca` / `.qa.json` | `nucleo/marca.mjs` + `regua/marcas/` | 2 brands complete, 2 partial |
+| Image / art | `.png .jpg .webp .tif` | `instrumentos/imagem.py` | 10 cases, JPEG checked against known truth |
+| Audio and video | `.mp4 .webm .wav .mp3 .m4a` | `instrumentos/midia.mjs` | 11 cases, `--perfil tutorial` |
+| Spreadsheet | `.xlsx` | `instrumentos/planilha.py` | 10 cases |
+| Web | URL, or `--web` on an HTML file | `instrumentos/web.mjs` | 6 cases, LCP variance measured |
+| Logged-in system | a system profile `.json` | `instrumentos/sistema.mjs` | fixture with one defect per layer plus a good version; write lock tested by mutation; report ordered N0 to N4 |
+| Code | `.js .mjs` or a folder | `instrumentos/codigo.mjs` | 7 cases; TypeScript not measured yet (shows as a warning) |
 
-Formato sem instrumento sai **INCOMPLETO**, nunca "passou".
-
-## A régua em três camadas
+## The ruler, in layers
 
 ```
-regua/padrao.json              universal — todo limite declara procedência
-  └─ regua/marcas/<marca>      fontes, paleta (ΔE2000), P&B, naming
-       └─ regua/perfis/<tipo>  limites ancorados num TIPO de peça (tutorial…)
-            └─ .qa.json         o que é só do projeto: {"marca": "ryze", "perfil": "tutorial"}
+regua/padrao.json              universal: every limit declares where it comes from
+  └─ regua/marcas/<brand>      fonts, palette (ΔE2000), black and white, naming
+       └─ regua/perfis/<type>  limits anchored on a TYPE of piece (tutorial...)
+            └─ .qa.json         what belongs to the project only: {"marca": "ryze", "perfil": "tutorial"}
 ```
 
-Procedência impressa ao lado de cada veredito: `norma` (WCAG, ISO, EBU) ·
-`ancora` (calibrado em peça com veredito humano) · `estrutural` (defeito
-binário) · `mercado` (convenção sem estudo) · `arbitrado?` (ninguém mediu).
+Each verdict prints its source next to it: `norma` (WCAG, ISO, EBU), `ancora` (calibrated on a piece with a human verdict), `estrutural` (binary defect), `mercado` (convention without a study), `arbitrado?` (nobody measured).
 
-## Estrutura
+## Stack
+
+Node.js (ES modules) with Playwright 1.62, axe-core and ESLint. Python 3 with PyMuPDF, Pillow and openpyxl for PDF, image and spreadsheet. ffmpeg and ffprobe for media. Chrome for printing HTML to PDF. Optional speech-quality and transcription models in their own virtual environments (paths in `nucleo/ambiente.mjs`).
+
+## Run locally
 
 ```
-qa.mjs                 o comando único
-instrumentos/          medem e devolvem JSON; não julgam
-nucleo/                ambiente (executáveis), régua, cor, marca
-regua/                 limites com procedência; marcas
-fixtures/              um arquivo por defeito, gerado pelo mecanismo real
-testes/                assinatura do defeito + medida do instrumento
-claude/skills/qa/      a skill (junction em ~/.claude/skills/qa)
+npm install
+node qa.mjs <piece|folder|url> [another ...] [--marca ryze] [--perfil tutorial] [--destino tela|impressao|grafica] [--json]
+# logged-in system (read only): node qa.mjs <system-profile>.json [--contas a,b]
+# media: --voz (speech quality) · --fala text.txt (reverse transcription) · image: --tamanho-mm 150
 ```
+
+Exit code: `0` passed, `1` failed or unreadable, `3` incomplete.
+
+The logged-in mode enters real production systems with credentials taken from 1Password, and only reads. Profiles of real client systems live in the client project repository, not here. The only profile here is the test fixture (`fixtures/sistema/`).
+
+`nucleo/ambiente.mjs` points to executables on the author's Windows machine. On another machine, adjust those paths first.
+
+## Tests
+
+```
+npm test
+```
+
+Runs `testes/todos.mjs`: 11 suites, one per instrument plus color and brand. Each suite generates a fixture per defect through the real mechanism and checks that the instrument sees it, and that the good version passes. One test runs the code instrument on this repository itself. Everything runs against a local server (127.0.0.1). There is no CI yet.
+
+## Folders
+
+```
+qa.mjs                 the single command
+instrumentos/          measure and return JSON; they do not judge
+nucleo/                environment (executables), ruler, color, brand, credentials
+regua/                 limits with their source; brands; piece profiles
+fixtures/              one file per defect, generated by the real mechanism
+testes/                defect signature plus the instrument measurement
+ferramentas/           helpers for live sessions (not instruments)
+claude/skills/qa/      the Claude Code skill that drives the pipeline
+docs/arquitetura/      diagrams (UML, BPMN, C4)
+reports/, research_notes/, decisoes/   the ruler compared with standards, and decisions
+```
+
+## Decisions and known limits
+
+- Measuring is separate from judging: instruments return numbers, the ruler decides.
+- A limit without a measured source is marked `arbitrado?` instead of being hidden.
+- `ferramentas/sessao.mjs` has no write lock (it is the level 2 tool, where each step is written and read by hand before sending). The logged-in instrument has one.
+- Lessons with their measurements: [LICOES.md](LICOES.md) (Portuguese).
+- The method: [claude/skills/qa/SKILL.md](claude/skills/qa/SKILL.md) (Portuguese).
+
+## Architecture
+
+See [docs/arquitetura/](docs/arquitetura/).
+
+## License
+
+All rights reserved.
