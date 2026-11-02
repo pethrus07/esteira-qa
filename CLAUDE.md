@@ -37,8 +37,8 @@ node qa.mjs <perfil-do-sistema>.json [--contas a,b]  # sistema logado (só leitu
   **não** cobre (`nao_cobre` também está no `qa.mjs`).
 - `regua/padrao.json` → `regua/marcas/*.json` → `regua/perfis/*.json` → `.qa.json` do projeto.
 - `reports/Padrões de mercado para QA.md` + `research_notes/` — régua comparada com normas.
-- `decisoes/regua-decisoes-2026-10-08.docx` — decisões e parâmetros da régua a decidir.
-- Perfis de sistema logado de cliente (contas e telas) e os passos do nível 2 do Suíte X moram no repositório do projeto (`qa-empresa/suite-x-n2/`) desde 01/11/2026. Aqui fica só a fixture (`fixtures/sistema/`).
+- `decisoes/` (fora do git, só no disco) — documento de decisões da régua.
+- Perfis de sistema logado de cliente (contas e telas) e os passos do nível 2 do Suíte X moram no repositório do projeto do cliente desde 01/11/2026. Aqui fica só a fixture (`fixtures/sistema/`).
 
 ## Relação com a skill `qa`
 

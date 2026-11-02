@@ -77,7 +77,7 @@ testes/                assinatura do defeito mais a medida do instrumento
 ferramentas/           apoio para sessão ao vivo (não são instrumentos)
 claude/skills/qa/      a skill do Claude Code que conduz a esteira
 docs/arquitetura/      diagramas (UML, BPMN, C4)
-reports/, research_notes/, decisoes/   a régua comparada com normas, e decisões
+reports/, research_notes/             a régua comparada com normas
 ```
 
 ## Decisões e limites conhecidos
@@ -94,4 +94,4 @@ Ver [docs/arquitetura/](docs/arquitetura/).
 
 ## Licença
 
-Todos os direitos reservados.
+MIT. Veja [LICENSE](LICENSE).

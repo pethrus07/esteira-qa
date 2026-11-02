@@ -77,7 +77,7 @@ testes/                defect signature plus the instrument measurement
 ferramentas/           helpers for live sessions (not instruments)
 claude/skills/qa/      the Claude Code skill that drives the pipeline
 docs/arquitetura/      diagrams (UML, BPMN, C4)
-reports/, research_notes/, decisoes/   the ruler compared with standards, and decisions
+reports/, research_notes/             the ruler compared with standards
 ```
 
 ## Decisions and known limits
@@ -94,4 +94,4 @@ See [docs/arquitetura/](docs/arquitetura/).
 
 ## License
 
-All rights reserved.
+MIT. See [LICENSE](LICENSE).
