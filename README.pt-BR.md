@@ -1,6 +1,6 @@
 # esteira-qa
 
-[English](README.md)
+[English](README.md) · Português
 
 Uma esteira de QA universal. Mede qualquer peça antes de ela chegar a uma pessoa (PDF, documento HTML, imagem, áudio, vídeo, planilha, página web, código, sistema logado) e reprova o que está quebrado. Ela reprova; não aprova. Gosto, tom e adequação ao cliente continuam sendo julgamento humano.
 
@@ -85,6 +85,10 @@ docs/arquitetura/      diagramas (UML, BPMN, C4)
 reports/, research_notes/             a régua comparada com normas
 ```
 
+## Arquitetura
+
+Ver [docs/arquitetura/](docs/arquitetura/).
+
 ## Decisões e limites conhecidos
 
 - Medir é separado de julgar: o instrumento devolve número, a régua decide.
@@ -92,10 +96,6 @@ reports/, research_notes/             a régua comparada com normas
 - `ferramentas/sessao.mjs` não tem trava de escrita (é a ferramenta do nível 2, onde cada passo é escrito e lido à mão antes de mandar). O instrumento de sistema logado tem.
 - Lições com a medição de cada uma: [LICOES.md](LICOES.md).
 - O método: [claude/skills/qa/SKILL.md](claude/skills/qa/SKILL.md).
-
-## Arquitetura
-
-Ver [docs/arquitetura/](docs/arquitetura/).
 
 ## Licença
 

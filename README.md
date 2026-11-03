@@ -1,6 +1,6 @@
 # esteira-qa
 
-[Português](README.pt-BR.md)
+English · [Português](README.pt-BR.md)
 
 A universal QA pipeline. It measures any piece of work before it reaches a person (PDF, HTML document, image, audio, video, spreadsheet, web page, code, logged-in system) and fails what is broken. It fails; it does not approve. Taste, tone and fit for the client stay a human judgment.
 
@@ -85,6 +85,10 @@ docs/arquitetura/      diagrams (UML, BPMN, C4)
 reports/, research_notes/             the ruler compared with standards
 ```
 
+## Architecture
+
+See [docs/arquitetura/](docs/arquitetura/).
+
 ## Decisions and known limits
 
 - Measuring is separate from judging: instruments return numbers, the ruler decides.
@@ -92,10 +96,6 @@ reports/, research_notes/             the ruler compared with standards
 - `ferramentas/sessao.mjs` has no write lock (it is the level 2 tool, where each step is written and read by hand before sending). The logged-in instrument has one.
 - Lessons with their measurements: [LICOES.md](LICOES.md) (Portuguese).
 - The method: [claude/skills/qa/SKILL.md](claude/skills/qa/SKILL.md) (Portuguese).
-
-## Architecture
-
-See [docs/arquitetura/](docs/arquitetura/).
 
 ## License
 
