@@ -32,9 +32,12 @@ const creds = Object.fromEntries(contas.map((c) => [c.chave, credencial(c.op)]))
 /* --chrome: o Chrome INSTALADO, com janela. Para retestar achado e descartar
    artefato do headless (o Talk avisa "navegador sem suporte" ao Chromium de
    teste; 13/10). */
+/* --midia-falsa: câmera e microfone FALSOS do Chrome (padrão de teste), sem
+   pedir permissão. Para Meet/BBB: nunca ligar a câmera real do Pedro (12/11). */
+const args = argv.includes("--midia-falsa") ? ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] : [];
 const browser = argv.includes("--chrome")
-  ? await chromium.launch({ channel: "chrome", headless: false })
-  : await chromium.launch();
+  ? await chromium.launch({ channel: "chrome", headless: false, args })
+  : await chromium.launch({ args });
 const sessoes = {};
 for (const c of contas) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: "pt-BR", acceptDownloads: true });
