@@ -509,3 +509,19 @@ Outros dois do reteste: o "Sair" do Meet só foi exercitado na 2ª tentativa (o 
 um LINK "Conta" que abre menu; o primeiro passo não clicou nada e voltou "tudo logado", o que
 pareceria defeito); e o e-mail de convite existia, com assunto "Convite atualizado:" — a busca
 pelo assunto exato "Convite:" deu falso negativo. **Busca por assunto vai por trecho estável.**
+
+## Factory Hub (13/11) — login fora da lista e cadastro que parece login
+
+Primeiro sistema sem Keycloak medido pela esteira. Duas lições, as duas do instrumento:
+
+1. **A trava de escrita segurou o próprio login.** O site entra por `POST /api/conta/entrar`, que
+   não casava com `AUTENTICACAO` (`/login`, `oidc`, `/token`…): as duas contas saíram como
+   "não medido — ampliar AUTENTICACAO". Entrou `\/entrar\b` na lista; as 11 suítes seguem passando.
+   Regra: antes de rodar num produto novo, conferir a rota de login contra a lista, não esperar o
+   relatório dizer.
+2. **Página pública com formulário de cadastro (senha visível) foi lida como "deslogou".** Depois
+   de entrar, o instrumento seguiu o link da marca para `/`, viu `input[type=password]` (o cadastro
+   da home) e marcou N0 "Sessão caiu" e N1 "F5 desloga" para as duas contas. As evidências mostram a
+   home, não um login. Ainda NÃO corrigido no instrumento: o achado vai como pergunta ao time até a
+   detecção de "deslogou" exigir a volta ao mesmo formulário de entrada (mesma URL ou mesmo
+   `<form>`), e não qualquer campo de senha.

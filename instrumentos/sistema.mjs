@@ -73,7 +73,7 @@ const PERIGO = /logout|log-out|signout|sign-out|\bsair\b|excluir|remover|apagar|
    JavaScript). A trava segurou o POST e nada foi salvo — mas a trava é a
    rede, não o filtro. Link de comando e link só-JavaScript ficam de fora. */
 const COMANDO = /\b(salvar|save|enviar|send|responder|reply|encaminhar|forward|aplicar|apply|confirmar|confirm|criar|create|adicionar|add|importar|import|upload|enviar arquivo|compartilhar|share|mover|move|arquivar|archive|marcar|mark|bloquear|block|suspender|redefinir|reset|ativar|enable|instalar|install|imprimir|print|baixar|download|exportar|export)\b|_action=(send|save|move|delete|mark|import|upload|plugin\.)/i;
-const AUTENTICACAO = /realms\/[^/]+\/protocol|openid|oidc|oauth|\/token\b|refresh|\/login|_task=login|\/auth\/|callback|\/sso\b|\/cdn-cgi\//i;
+const AUTENTICACAO = /realms\/[^/]+\/protocol|openid|oidc|oauth|\/token\b|refresh|\/login|\/entrar\b|_task=login|\/auth\/|callback|\/sso\b|\/cdn-cgi\//i;
 const LEITURA_DAV = ["PROPFIND", "REPORT", "SEARCH"];
 const ESCRITA = ["POST", "PUT", "PATCH", "DELETE", "MKCOL", "MOVE", "COPY", "PROPPATCH", "LOCK", "UNLOCK"];
 const TELA_DE_ERRO = /(erro inesperado|ocorreu um erro|algo deu errado|something went wrong|internal server error|bad gateway|service unavailable|gateway time-?out|page not found|p[aá]gina n[aã]o encontrada|404 not found|application error|failed to fetch|unexpected error|cannot (get|post) \/|n[aã]o foi poss[ií]vel carregar|erro ao carregar)/i;
